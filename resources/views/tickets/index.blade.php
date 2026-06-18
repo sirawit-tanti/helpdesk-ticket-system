@@ -116,6 +116,7 @@
                         <th>Ticket No.</th>
                         <th>Title</th>
                         <th>Requester</th>
+                        <th>Assignee</th>
                         <th>Category</th>
                         <th>Priority</th>
                         <th>Status</th>
@@ -137,6 +138,16 @@
 
                         <td>
                             {{ $ticket->requester?->name ?? '-' }}
+                        </td>
+
+                        <td>
+                            @if($ticket->assignee)
+                            {{ $ticket->assignee->name }}
+                            @else
+                            <span class="badge bg-light text-dark border">
+                                Unassigned
+                            </span>
+                            @endif
                         </td>
 
                         <td>
@@ -183,6 +194,19 @@
                                 <a href="{{ route('tickets.edit', $ticket) }}" class="btn btn-sm btn-outline-secondary">
                                     Edit
                                 </a>
+                                @endif
+
+                                @if(auth()->user()->canManageTickets() && (int) $ticket->assignee_id !== (int)
+                                auth()->id())
+                                <form method="POST" action="{{ route('tickets.assign-to-me', $ticket) }}"
+                                    class="d-inline">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        Assign
+                                    </button>
+                                </form>
                                 @endif
                             </div>
                         </td>

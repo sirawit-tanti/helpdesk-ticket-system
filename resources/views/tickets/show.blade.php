@@ -26,6 +26,28 @@
 
 @if(auth()->user()->canManageTickets())
 <div class="d-flex flex-wrap gap-2">
+    @if((int) $ticket->assignee_id !== (int) auth()->id())
+    <form method="POST" action="{{ route('tickets.assign-to-me', $ticket) }}">
+        @csrf
+        @method('PATCH')
+
+        <button type="submit" class="btn btn-outline-primary">
+            Assign to Me
+        </button>
+    </form>
+    @endif
+
+    @if($ticket->assignee_id !== null)
+    <form method="POST" action="{{ route('tickets.unassign', $ticket) }}">
+        @csrf
+        @method('PATCH')
+
+        <button type="submit" class="btn btn-outline-secondary"
+            onclick="return confirm('Are you sure you want to unassign this ticket?');">
+            Unassign
+        </button>
+    </form>
+    @endif
     @if(! $ticket->status?->is_closed && $ticket->status?->name !== 'Resolved')
     <form method="POST" action="{{ route('tickets.resolve', $ticket) }}">
         @csrf

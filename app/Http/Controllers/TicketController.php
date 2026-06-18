@@ -547,4 +547,68 @@ class TicketController extends Controller
             ->route('tickets.show', $ticket)
             ->with('success', 'Ticket reopened successfully.');
     }
+
+    public function assignToMe(Request $request, Ticket $ticket, TicketActivityLogger $activityLogger): RedirectResponse
+    {
+        $this->authorizeManage($request, $ticket);
+
+        $user = $request->user();
+
+        $ticket->load('assignee');
+
+        $oldAssignee = $ticket->assignee?->name ?? 'Unassigned';
+
+        if ((int) $ticket->assignee_id === (int) $user->id) {
+            return redirect()
+                ->route('tickets.show', $ticket)
+                ->with('error', 'This ticket is already assigned to you.');
+        }
+
+        $ticket->update([
+            'assignee_id' => $user->id,
+        ]);
+
+        $activityLogger->logIfChanged(
+            ticket: $ticket,
+            userId: $user->id,
+            field: 'assignee',
+            oldValue: $oldAssignee,
+            newValue: $user->name
+        );
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Ticket assigned to you successfully.');
+    }
+
+    public function unassign(Request $request, Ticket $ticket, TicketActivityLogger $activityLogger): RedirectResponse
+    {
+        $this->authorizeManage($request, $ticket);
+
+        $ticket->load('assignee');
+
+        if ($ticket->assignee_id === null) {
+            return redirect()
+                ->route('tickets.show', $ticket)
+                ->with('error', 'This ticket is already unassigned.');
+        }
+
+        $oldAssignee = $ticket->assignee?->name ?? 'Unassigned';
+
+        $ticket->update([
+            'assignee_id' => null,
+        ]);
+
+        $activityLogger->logIfChanged(
+            ticket: $ticket,
+            userId: $request->user()->id,
+            field: 'assignee',
+            oldValue: $oldAssignee,
+            newValue: 'Unassigned'
+        );
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Ticket unassigned successfully.');
+    }
 }
