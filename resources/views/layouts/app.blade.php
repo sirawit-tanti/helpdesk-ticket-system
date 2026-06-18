@@ -7,12 +7,13 @@
     <title>@yield('title', 'Helpdesk Ticket System')</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand fw-semibold" href="{{ route('dashboard') }}">
+            <a class="navbar-brand" href="{{ route('dashboard') }}">
                 Helpdesk
             </a>
 
@@ -43,16 +44,14 @@
             @auth
             <aside class="col-md-3 col-lg-2 bg-white border-end p-3">
                 <div class="list-group list-group-flush">
-                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action active">
+                    <a href="{{ route('dashboard') }}"
+                        class="list-group-item list-group-item-action {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         Dashboard
                     </a>
 
-                    <a href="{{ route('tickets.index') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ route('tickets.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->routeIs('tickets.*') ? 'active' : '' }}">
                         Tickets
-                    </a>
-
-                    <a href="#" class="list-group-item list-group-item-action">
-                        Users
                     </a>
 
                     @if(auth()->user()->canManageTickets())
@@ -60,23 +59,28 @@
                         Admin
                     </div>
 
-                    <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ route('admin.users.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                         Users
                     </a>
 
-                    <a href="{{ route('admin.categories.index') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ route('admin.categories.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                         Categories
                     </a>
 
-                    <a href="{{ route('admin.departments.index') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ route('admin.departments.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}">
                         Departments
                     </a>
 
-                    <a href="{{ route('admin.priorities.index') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ route('admin.priorities.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.priorities.*') ? 'active' : '' }}">
                         Priorities
                     </a>
 
-                    <a href="{{ route('admin.statuses.index') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ route('admin.statuses.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.statuses.*') ? 'active' : '' }}">
                         Statuses
                     </a>
                     @endif
@@ -97,6 +101,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>dn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
