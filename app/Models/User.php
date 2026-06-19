@@ -113,4 +113,19 @@ class User extends Authenticatable
         return $this->hasMany(TicketAttachment::class, 'uploaded_by');
     }
 
+    public function getRoleColorAttribute(): string
+    {
+        return match ($this->role?->name) {
+            'admin' => 'danger',
+            'agent' => 'primary',
+            'requester' => 'success',
+            default => 'secondary',
+        };
+    }
+
+    public function getInitialAttribute(): string
+    {
+        return strtoupper(substr($this->name ?? 'U', 0, 1));
+    }
+
 }

@@ -24,15 +24,26 @@
             </div>
 
             <div class="card-body">
-                <div class="mb-3">
-                    <div class="text-muted small">Email</div>
-                    <div class="fw-semibold">{{ $user->email }}</div>
+                <div class="profile-avatar-block mb-4">
+                    <div class="profile-avatar profile-avatar-{{ $user->role?->name ?? 'user' }}">
+                        {{ $user->initial }}
+                    </div>
+
+                    <div>
+                        <div class="profile-avatar-name">
+                            {{ $user->name }}
+                        </div>
+
+                        <div class="profile-avatar-email">
+                            {{ $user->email }}
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <div class="text-muted small">Role</div>
                     <div>
-                        <span class="badge bg-primary">
+                        <span class="badge bg-{{ $user->role_color }}">
                             {{ $user->role?->display_name ?? '-' }}
                         </span>
                     </div>

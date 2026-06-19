@@ -38,8 +38,8 @@
 
             <div class="ms-auto d-flex align-items-center gap-3">
                 <div class="app-user-info d-none d-md-flex">
-                    <div class="app-user-avatar">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    <div class="app-user-avatar app-user-avatar-{{ auth()->user()->role?->name ?? 'user' }}">
+                        {{ auth()->user()->initial }}
                     </div>
 
                     <div class="app-user-meta">
@@ -48,7 +48,9 @@
                         </div>
 
                         <div class="app-user-role">
-                            {{ auth()->user()->role?->display_name ?? 'User' }}
+                            <span class="app-role-chip app-role-chip-{{ auth()->user()->role?->name ?? 'user' }}">
+                                {{ auth()->user()->role?->display_name ?? 'User' }}
+                            </span>
                         </div>
                     </div>
                 </div>

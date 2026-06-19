@@ -1903,3 +1903,122 @@ tr:has(.ticket-checkbox:disabled) {
     color: #713f12;
     background: #fef3c7;
 }
+
+/* User Avatar & Role Chips */
+.app-user-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 2px solid rgba(255, 255, 255, 0.24);
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 900;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.22);
+}
+
+.app-user-avatar-admin {
+    background: linear-gradient(135deg, #dc2626, #f97316);
+}
+
+.app-user-avatar-agent {
+    background: linear-gradient(135deg, #2563eb, #38bdf8);
+}
+
+.app-user-avatar-requester {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+.app-user-avatar-user {
+    background: linear-gradient(135deg, #64748b, #94a3b8);
+}
+
+.app-role-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 850;
+}
+
+.app-role-chip-admin {
+    color: #fecaca;
+    background: rgba(220, 38, 38, 0.16);
+}
+
+.app-role-chip-agent {
+    color: #bfdbfe;
+    background: rgba(37, 99, 235, 0.16);
+}
+
+.app-role-chip-requester {
+    color: #bbf7d0;
+    background: rgba(22, 163, 74, 0.16);
+}
+
+.app-role-chip-user {
+    color: #e2e8f0;
+    background: rgba(100, 116, 139, 0.18);
+}
+
+/* Profile Avatar */
+.profile-avatar-block {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(37, 99, 235, 0.08),
+            transparent 28%
+        ),
+        #f8fafc;
+}
+
+.profile-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size: 1.45rem;
+    font-weight: 900;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+}
+
+.profile-avatar-admin {
+    background: linear-gradient(135deg, #dc2626, #f97316);
+}
+
+.profile-avatar-agent {
+    background: linear-gradient(135deg, #2563eb, #38bdf8);
+}
+
+.profile-avatar-requester {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+.profile-avatar-user {
+    background: linear-gradient(135deg, #64748b, #94a3b8);
+}
+
+.profile-avatar-name {
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.profile-avatar-email {
+    margin-top: 0.15rem;
+    color: #64748b;
+    font-size: 0.84rem;
+    font-weight: 650;
+}
