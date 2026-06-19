@@ -1,5 +1,24 @@
 @extends('layouts.app')
 
+@php
+$highlightSearchTerm = function ($text, $search) {
+if (! $search) {
+return e($text);
+}
+
+$escapedText = e($text);
+$escapedSearch = preg_quote(e($search), '/');
+
+return preg_replace(
+"/($escapedSearch)/i",
+'<mark class="search-highlight">$1</mark>',
+$escapedText
+);
+};
+
+$searchTerm = request('search');
+@endphp
+
 @section('title', 'Tickets - Helpdesk Ticket System')
 
 @section('content')
@@ -174,6 +193,40 @@
 </div>
 @endif
 
+@if(! empty($activeFilters))
+<div class="active-filter-bar mb-3">
+    <div class="d-flex align-items-center flex-wrap gap-2">
+        <span class="active-filter-label">
+            Active filters:
+        </span>
+
+        @foreach($activeFilters as $key => $filter)
+        @php
+        $query = request()->query();
+        unset($query[$key]);
+        unset($query['page']);
+        @endphp
+
+        <a href="{{ url()->current() }}?{{ http_build_query($query) }}" class="active-filter-chip">
+            <span class="active-filter-chip-label">
+                {{ $filter['label'] }}:
+            </span>
+
+            <span>
+                {{ $filter['value'] }}
+            </span>
+
+            <i class="bi bi-x-lg"></i>
+        </a>
+        @endforeach
+
+        <a href="{{ url()->current() }}" class="active-filter-clear">
+            Clear all
+        </a>
+    </div>
+</div>
+@endif
+
 @if(auth()->user()->canManageTickets())
 <form method="POST" action="{{ route('tickets.bulk-action') }}" id="bulkActionForm"
     data-current-user-id="{{ auth()->id() }}">
@@ -246,11 +299,11 @@
                             </td>
                             @endif
                             <td class="fw-semibold">
-                                {{ $ticket->ticket_no }}
+                                {!! $highlightSearchTerm($ticket->ticket_no, $searchTerm) !!}
                             </td>
 
                             <td>
-                                {{ $ticket->title }}
+                                {!! $highlightSearchTerm($ticket->title, $searchTerm) !!}
                             </td>
 
                             <td>

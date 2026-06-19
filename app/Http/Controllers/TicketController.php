@@ -659,6 +659,55 @@ class TicketController extends Controller
             ->orderBy('name')
             ->get();
 
+        $activeFilters = [];
+
+        if ($request->filled('search')) {
+            $activeFilters['search'] = [
+                'label' => 'Search',
+                'value' => $request->input('search'),
+            ];
+        }
+
+        if ($request->filled('status_id')) {
+            $status = $statuses->firstWhere('id', (int) $request->input('status_id'));
+
+            if ($status) {
+                $activeFilters['status_id'] = [
+                    'label' => 'Status',
+                    'value' => $status->name,
+                ];
+            }
+        }
+
+        if ($request->filled('priority_id')) {
+            $priority = $priorities->firstWhere('id', (int) $request->input('priority_id'));
+
+            if ($priority) {
+                $activeFilters['priority_id'] = [
+                    'label' => 'Priority',
+                    'value' => $priority->name,
+                ];
+            }
+        }
+
+        if ($request->filled('category_id')) {
+            $category = $categories->firstWhere('id', (int) $request->input('category_id'));
+
+            if ($category) {
+                $activeFilters['category_id'] = [
+                    'label' => 'Category',
+                    'value' => $category->name,
+                ];
+            }
+        }
+
+        if ($request->boolean('overdue')) {
+            $activeFilters['overdue'] = [
+                'label' => 'Filter',
+                'value' => 'Overdue Only',
+            ];
+        }
+
         return view('tickets.index', compact(
             'tickets',
             'statuses',
@@ -667,7 +716,8 @@ class TicketController extends Controller
             'pageTitle',
             'pageDescription',
             'sort',
-            'perPage'
+            'perPage',
+            'activeFilters'
         ));
     }
 
