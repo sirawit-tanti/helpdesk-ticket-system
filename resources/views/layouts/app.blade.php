@@ -89,26 +89,63 @@
             @endauth
 
             <main class="{{ auth()->check() ? 'col-12 col-lg-10 app-main-content' : 'col-12 app-guest-content' }}">
-                @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-                @endif
-
-                @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-                @endif
-
                 @yield('content')
             </main>
         </div>
     </div>
 
+    <div class="toast-container position-fixed top-0 end-0 p-3 app-toast-container">
+        @if(session('success'))
+        <div class="toast app-toast app-toast-success" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-delay="3500">
+            <div class="toast-header">
+                <span class="app-toast-icon">
+                    <i class="bi bi-check-lg"></i>
+                </span>
+
+                <strong class="me-auto">Success</strong>
+
+                <small>Now</small>
+
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+
+            <div class="toast-body">
+                {{ session('success') }}
+            </div>
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="toast app-toast app-toast-error" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-delay="5000">
+            <div class="toast-header">
+                <span class="app-toast-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </span>
+
+                <strong class="me-auto">Error</strong>
+
+                <small>Now</small>
+
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+
+            <div class="toast-body">
+                {{ session('error') }}
+            </div>
+        </div>
+        @endif
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+    document.querySelectorAll('.toast').forEach(function(toastElement) {
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+    });
+
     document.querySelectorAll('[data-password-toggle]').forEach(function(button) {
         button.addEventListener('click', function() {
             const inputId = button.getAttribute('data-password-toggle');
