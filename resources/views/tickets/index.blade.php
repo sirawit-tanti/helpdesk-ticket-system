@@ -96,6 +96,50 @@
                     </select>
                 </div>
 
+                <div class="col-md-3">
+                    <label for="sort" class="form-label">
+                        Sort By
+                    </label>
+
+                    <select name="sort" id="sort" class="form-select" data-auto-submit>
+                        <option value="latest" {{ ($sort ?? 'latest') === 'latest' ? 'selected' : '' }}>
+                            Latest
+                        </option>
+
+                        <option value="oldest" {{ ($sort ?? 'latest') === 'oldest' ? 'selected' : '' }}>
+                            Oldest
+                        </option>
+
+                        <option value="due_soon" {{ ($sort ?? 'latest') === 'due_soon' ? 'selected' : '' }}>
+                            Due Soon
+                        </option>
+
+                        <option value="overdue_first" {{ ($sort ?? 'latest') === 'overdue_first' ? 'selected' : '' }}>
+                            Overdue First
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="per_page" class="form-label">
+                        Per Page
+                    </label>
+
+                    <select name="per_page" id="per_page" class="form-select" data-auto-submit>
+                        <option value="10" {{ (int) ($perPage ?? 10) === 10 ? 'selected' : '' }}>
+                            10
+                        </option>
+
+                        <option value="25" {{ (int) ($perPage ?? 10) === 25 ? 'selected' : '' }}>
+                            25
+                        </option>
+
+                        <option value="50" {{ (int) ($perPage ?? 10) === 50 ? 'selected' : '' }}>
+                            50
+                        </option>
+                    </select>
+                </div>
+
                 <div class="col-md-2">
                     <div class="form-check mt-4">
                         <input type="checkbox" name="overdue" id="overdue" value="1" class="form-check-input"
@@ -114,7 +158,7 @@
                             Filter
                         </button>
 
-                        <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ url()->current() }}" class="btn btn-outline-secondary">
                             Reset
                         </a>
                     </div>

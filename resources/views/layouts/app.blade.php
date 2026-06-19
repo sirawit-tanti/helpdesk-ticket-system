@@ -191,6 +191,12 @@
             }
         });
     }
+
+    document.querySelectorAll('[data-auto-submit]').forEach(function(element) {
+        element.addEventListener('change', function() {
+            element.closest('form')?.submit();
+        });
+    });
     </script>
 </body>
 

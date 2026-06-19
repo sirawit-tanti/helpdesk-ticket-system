@@ -31,7 +31,7 @@ class TicketController extends Controller
             'category',
             'priority',
             'status',
-        ])->latest();
+        ]);
 
         if ($user->isRequester()) {
             $query->where('requester_id', $user->id);
@@ -600,9 +600,52 @@ class TicketController extends Controller
                 });
         }
 
-        $tickets = $query->latest()
-            ->paginate(10)
-            ->withQueryString();
+        $sort = $request->input('sort', 'latest');
+        $perPage = (int) $request->input('per_page', 10);
+
+        if (! in_array($perPage, [10, 25, 50], true)) {
+            $perPage = 10;
+        }
+
+        $query->reorder();
+
+        (match ($sort) {
+            'oldest' => function () use ($query) {
+                $query->orderBy('tickets.created_at', 'asc');
+            },
+
+            'due_soon' => function () use ($query) {
+                $query->orderByRaw('CASE WHEN tickets.due_at IS NULL THEN 1 ELSE 0 END ASC')
+                    ->orderBy('tickets.due_at', 'asc')
+                    ->orderBy('tickets.created_at', 'desc');
+            },
+
+            'overdue_first' => function () use ($query) {
+                $query->orderByRaw("
+                    CASE
+                        WHEN tickets.due_at IS NOT NULL
+                            AND tickets.due_at < ?
+                            AND EXISTS (
+                                SELECT 1
+                                FROM ticket_statuses
+                                WHERE ticket_statuses.id = tickets.ticket_status_id
+                                AND ticket_statuses.is_closed = false
+                            )
+                        THEN 0
+                        ELSE 1
+                    END ASC
+                ", [now()])
+                    ->orderByRaw('CASE WHEN tickets.due_at IS NULL THEN 1 ELSE 0 END ASC')
+                    ->orderBy('tickets.due_at', 'asc')
+                    ->orderBy('tickets.created_at', 'desc');
+            },
+
+            default => function () use ($query) {
+                $query->orderBy('tickets.created_at', 'desc');
+            },
+        })();
+
+        $tickets = $query->paginate($perPage)->withQueryString();
 
         $statuses = TicketStatus::where('is_active', true)
             ->orderBy('sort_order')
@@ -622,7 +665,9 @@ class TicketController extends Controller
             'priorities',
             'categories',
             'pageTitle',
-            'pageDescription'
+            'pageDescription',
+            'sort',
+            'perPage'
         ));
     }
 
