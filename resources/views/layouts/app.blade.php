@@ -162,6 +162,23 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.querySelectorAll('[data-password-toggle]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const inputId = button.getAttribute('data-password-toggle');
+            const input = document.getElementById(inputId);
+
+            if (!input) {
+                return;
+            }
+
+            const isPassword = input.getAttribute('type') === 'password';
+
+            input.setAttribute('type', isPassword ? 'text' : 'password');
+            button.textContent = isPassword ? 'Hide' : 'Show';
+        });
+    });
+    </script>
 </body>
 
 </html>dn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -764,3 +764,14 @@ code {
     background: #dbeafe;
     transform: translateY(-1px);
 }
+
+.password-toggle-btn {
+    min-width: 68px;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.input-group .invalid-feedback.d-block {
+    width: 100%;
+    margin-top: 0.35rem;
+}

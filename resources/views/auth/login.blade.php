@@ -37,14 +37,21 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
 
-                        <input type="password" name="password" id="password"
-                            class="form-control @error('password') is-invalid @enderror" required>
+                        <div class="input-group">
+                            <input type="password" name="password" id="password"
+                                class="form-control @error('password') is-invalid @enderror" required>
 
-                        @error('password')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                            <button type="button" class="btn btn-outline-secondary password-toggle-btn"
+                                data-password-toggle="password">
+                                Show
+                            </button>
+
+                            @error('password')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
-                        @enderror
                     </div>
 
                     <div class="form-check mb-3">

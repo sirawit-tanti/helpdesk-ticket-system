@@ -106,15 +106,22 @@
                             Current Password
                         </label>
 
-                        <input type="password" name="current_password" id="current_password"
-                            class="form-control @error('current_password', 'passwordUpdate') is-invalid @enderror"
-                            required>
+                        <div class="input-group">
+                            <input type="password" name="current_password" id="current_password"
+                                class="form-control @error('current_password', 'passwordUpdate') is-invalid @enderror"
+                                required>
 
-                        @error('current_password', 'passwordUpdate')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                            <button type="button" class="btn btn-outline-secondary password-toggle-btn"
+                                data-password-toggle="current_password">
+                                Show
+                            </button>
+
+                            @error('current_password', 'passwordUpdate')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
-                        @enderror
                     </div>
 
                     <div class="mb-3">
@@ -122,14 +129,21 @@
                             New Password
                         </label>
 
-                        <input type="password" name="password" id="password"
-                            class="form-control @error('password', 'passwordUpdate') is-invalid @enderror" required>
+                        <div class="input-group">
+                            <input type="password" name="password" id="password"
+                                class="form-control @error('password', 'passwordUpdate') is-invalid @enderror" required>
 
-                        @error('password', 'passwordUpdate')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                            <button type="button" class="btn btn-outline-secondary password-toggle-btn"
+                                data-password-toggle="password">
+                                Show
+                            </button>
+
+                            @error('password', 'passwordUpdate')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
-                        @enderror
                     </div>
 
                     <div class="mb-3">
@@ -137,8 +151,15 @@
                             Confirm New Password
                         </label>
 
-                        <input type="password" name="password_confirmation" id="password_confirmation"
-                            class="form-control" required>
+                        <div class="input-group">
+                            <input type="password" name="password_confirmation" id="password_confirmation"
+                                class="form-control" required>
+
+                            <button type="button" class="btn btn-outline-secondary password-toggle-btn"
+                                data-password-toggle="password_confirmation">
+                                Show
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-warning">
