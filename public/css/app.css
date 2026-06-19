@@ -1674,3 +1674,117 @@ tr:has(.ticket-checkbox:disabled) {
     pointer-events: none;
     opacity: 0.75;
 }
+
+/* Print */
+@media print {
+    @page {
+        size: A4;
+        margin: 14mm;
+    }
+
+    body {
+        color: #111827 !important;
+        background: #ffffff !important;
+        font-size: 12px;
+    }
+
+    .app-navbar,
+    .app-sidebar,
+    .app-mobile-sidebar,
+    .toast-container,
+    .no-print {
+        display: none !important;
+    }
+
+    .container-fluid,
+    .row,
+    main {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .card,
+    .ticket-detail-header {
+        border: 1px solid #e5e7eb !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .card {
+        margin-bottom: 12px !important;
+    }
+
+    .card-header {
+        color: #111827 !important;
+        background: #f8fafc !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        font-weight: 800;
+    }
+
+    .badge {
+        border: 1px solid #d1d5db !important;
+        color: #111827 !important;
+        background: #ffffff !important;
+    }
+
+    .ticket-detail-header {
+        padding: 14px !important;
+        margin-bottom: 12px !important;
+        background: #ffffff !important;
+    }
+
+    .ticket-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+
+    .ticket-info-item {
+        padding: 8px !important;
+        background: #ffffff !important;
+    }
+
+    .comment-item,
+    .activity-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .comment-avatar,
+    .activity-icon {
+        box-shadow: none !important;
+    }
+
+    a {
+        color: #111827 !important;
+        text-decoration: none !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    .print-header {
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-radius: 2px solid #111827;
+    }
+
+    .print-title {
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .print-meta {
+        margin-top: 2px;
+        color: #6b7280;
+        font-size: 11px;
+    }
+}
+
+.print-only {
+    display: none;
+}

@@ -3,6 +3,15 @@
 @section('title', $ticket->ticket_no . ' - Helpdesk Ticket System')
 
 @section('content')
+<div class="print-only print-header">
+    <div class="print-title">
+        Helpdesk Ticket System
+    </div>
+
+    <div class="print-meta">
+        Printed at {{ now()->format('Y-m-d H:i') }}
+    </div>
+</div>
 <div class="ticket-detail-header mb-4">
     <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
         <div>
@@ -51,6 +60,11 @@
                 Copy Link
             </button>
 
+            <button type="button" class="btn btn-outline-secondary no-print" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i>
+                Print
+            </button>
+
             <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary">
                 Back
             </a>
@@ -65,7 +79,7 @@
 </div>
 
 @if(auth()->user()->canManageTickets())
-<div class="card border-0 shadow-sm mb-4">
+<div class="card border-0 shadow-sm mb-4 no-print">
     <div class="card-header bg-white">
         Workflow Actions
     </div>
@@ -242,7 +256,7 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm mb-4">
+        <div class="card border-0 shadow-sm mb-4 no-print">
             <div class="card-header bg-white">
                 Add Comment
             </div>
@@ -521,7 +535,7 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm mt-3">
+        <div class="card border-0 shadow-sm mt-3 no-print">
             <div class="card-header bg-white">
                 Attachments
             </div>
