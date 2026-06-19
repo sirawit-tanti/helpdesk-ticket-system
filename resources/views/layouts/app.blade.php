@@ -274,6 +274,31 @@
             element.closest('form')?.submit();
         });
     });
+
+    document.querySelectorAll('form[data-loading-form]').forEach(function(form) {
+        form.addEventListener('submit', function() {
+            const submitButton = form.querySelector('[type="submit"]');
+
+            if (!submitButton) {
+                return;
+            }
+
+            if (submitButton.dataset.loading === 'true') {
+                return;
+            }
+
+            submitButton.dataset.loading = 'true';
+            submitButton.disabled = true;
+
+            const originalText = submitButton.innerHTML;
+            submitButton.dataset.originalText = originalText;
+
+            submitButton.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            Processing...
+        `;
+        });
+    });
     </script>
 </body>
 

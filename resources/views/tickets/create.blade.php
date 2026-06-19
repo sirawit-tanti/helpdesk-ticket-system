@@ -18,7 +18,7 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="{{ route('tickets.store') }}">
+        <form method="POST" action="{{ route('tickets.store') }}" data-loading-form>
             @csrf
 
             <div class="mb-3">

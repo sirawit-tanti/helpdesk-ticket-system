@@ -237,7 +237,7 @@
 
             <div class="card-body">
                 <form method="POST" action="{{ route('tickets.comments.store', $ticket) }}"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" data-loading-form>
                     @csrf
 
                     <div class="mb-3">

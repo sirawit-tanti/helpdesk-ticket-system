@@ -1300,13 +1300,21 @@ code {
 
 /* Empty State */
 .empty-state {
-    padding: 2.5rem 1rem;
+    padding: 2.75rem 1rem;
     text-align: center;
 }
 
 .empty-state-icon {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    margin-bottom: 1rem;
+    border-radius: 18px;
+    color: #2563eb;
+    font-size: 1.65rem;
+    background: #eff6ff;
 }
 
 .empty-state-title {
@@ -1316,9 +1324,11 @@ code {
 }
 
 .empty-state-text {
-    margin-top: 0.25rem;
+    max-width: 420px;
+    margin: 0.35rem auto 0;
     color: #64748b;
     font-size: 0.9rem;
+    line-height: 1.6;
 }
 
 /* Activity Timeline */

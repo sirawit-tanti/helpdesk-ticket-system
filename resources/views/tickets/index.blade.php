@@ -336,7 +336,35 @@
 
             {{ $tickets->links() }}
             @else
-            <div class="text-center py-5">
+            @forelse($tickets as $ticket)
+            {{-- ticket row --}}
+            @empty
+            <tr>
+                <td colspan="{{ auth()->user()->canManageTickets() ? 10 : 9 }}">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="bi bi-inbox"></i>
+                        </div>
+
+                        <div class="empty-state-title">
+                            No tickets found
+                        </div>
+
+                        <div class="empty-state-text">
+                            Try adjusting your filters or create a new ticket.
+                        </div>
+
+                        <div class="mt-3">
+                            <a href="{{ route('tickets.create') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-lg me-1"></i>
+                                Create Ticket
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            @endforelse
+            <!-- <div class="text-center py-5">
                 <h2 class="h5">No tickets found</h2>
                 <p class="text-muted mb-3">
                     Create your first support ticket to get started.
@@ -345,7 +373,7 @@
                 <a href="{{ route('tickets.create') }}" class="btn btn-primary">
                     Create Ticket
                 </a>
-            </div>
+            </div> -->
             @endif
         </div>
     </div>

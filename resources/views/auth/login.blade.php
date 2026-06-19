@@ -48,7 +48,7 @@
                 </p>
             </div>
 
-            <form method="POST" action="{{ route('login.store') }}">
+            <form method="POST" action="{{ route('login.store') }}" data-loading-form>
                 @csrf
 
                 <div class="mb-3">

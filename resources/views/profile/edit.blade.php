@@ -65,7 +65,7 @@
             </div>
 
             <div class="card-body">
-                <form method="POST" action="{{ route('profile.update') }}">
+                <form method="POST" action="{{ route('profile.update') }}" data-loading-form>
                     @csrf
                     @method('PATCH')
 
