@@ -378,6 +378,18 @@
         `;
         });
     });
+    document.querySelectorAll('.ticket-row[data-href]').forEach(function(row) {
+        row.addEventListener('click', function(event) {
+            const ignoredSelector =
+                'a, button, input, select, textarea, label, form, .ticket-row-actions';
+
+            if (event.target.closest(ignoredSelector)) {
+                return;
+            }
+
+            window.location.href = row.getAttribute('data-href');
+        });
+    });
     </script>
 </body>
 

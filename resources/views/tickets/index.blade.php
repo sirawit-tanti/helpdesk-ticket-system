@@ -235,7 +235,8 @@
                     </thead>
                     <tbody>
                         @foreach($tickets as $ticket)
-                        <tr>
+                        <tr class="ticket-row {{ $ticket->isOverdue() ? 'ticket-row-overdue' : '' }} {{ $ticket->isDueSoon() ? 'ticket-row-due-soon' : '' }}"
+                            data-href="{{ route('tickets.show', $ticket) }}">
                             @if(auth()->user()->canManageTickets())
                             <td>
                                 <input type="checkbox" name="ticket_ids[]" value="{{ $ticket->id }}"
@@ -300,7 +301,7 @@
                                 {{ $ticket->created_at->format('Y-m-d H:i') }}
                             </td>
 
-                            <td class="text-end">
+                            <td class="text-end ticket-row-actions">
                                 <div class="d-flex justify-content-end gap-1">
                                     <a href="{{ route('tickets.show', $ticket) }}"
                                         class="btn btn-sm btn-outline-primary">
@@ -339,7 +340,8 @@
             @forelse($tickets as $ticket)
             {{-- ticket row --}}
             @empty
-            <tr>
+            <tr class="ticket-row {{ $ticket->isOverdue() ? 'ticket-row-overdue' : '' }} {{ $ticket->isDueSoon() ? 'ticket-row-due-soon' : '' }}"
+                data-href="{{ route('tickets.show', $ticket) }}">
                 <td colspan="{{ auth()->user()->canManageTickets() ? 10 : 9 }}">
                     <div class="empty-state">
                         <div class="empty-state-icon">
