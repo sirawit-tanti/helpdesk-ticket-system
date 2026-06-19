@@ -5,15 +5,39 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-1">Tickets</h1>
+        <h1 class="h3 mb-1">{{ $pageTitle ?? 'Tickets' }}</h1>
         <p class="text-muted mb-0">
-            Manage and track support requests.
+            {{ $pageDescription ?? 'View and manage support tickets.' }}
         </p>
     </div>
 
-    <a href="{{ route('tickets.create') }}" class="btn btn-primary">
-        Create Ticket
-    </a>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{{ route('tickets.index') }}"
+            class="btn {{ request()->routeIs('tickets.index') ? 'btn-primary' : 'btn-outline-secondary' }}">
+            All Tickets
+        </a>
+
+        <a href="{{ route('tickets.my') }}"
+            class="btn {{ request()->routeIs('tickets.my') ? 'btn-primary' : 'btn-outline-secondary' }}">
+            My Tickets
+        </a>
+
+        @if(auth()->user()->canManageTickets())
+        <a href="{{ route('tickets.assigned-to-me') }}"
+            class="btn {{ request()->routeIs('tickets.assigned-to-me') ? 'btn-primary' : 'btn-outline-secondary' }}">
+            Assigned to Me
+        </a>
+
+        <a href="{{ route('tickets.unassigned') }}"
+            class="btn {{ request()->routeIs('tickets.unassigned') ? 'btn-primary' : 'btn-outline-secondary' }}">
+            Unassigned Queue
+        </a>
+        @endif
+
+        <a href="{{ route('tickets.create') }}" class="btn btn-success">
+            Create Ticket
+        </a>
+    </div>
 </div>
 
 <div class="card border-0 shadow-sm mb-3">

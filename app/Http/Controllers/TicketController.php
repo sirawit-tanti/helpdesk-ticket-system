@@ -44,55 +44,12 @@ class TicketController extends Controller
             });
         }
 
-        if ($request->filled('search')) {
-            $search = $request->string('search')->toString();
-
-            $query->where(function ($q) use ($search) {
-                $q->where('ticket_no', 'ilike', "%{$search}%")
-                    ->orWhere('title', 'ilike', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('status_id')) {
-            $query->where('ticket_status_id', $request->input('status_id'));
-        }
-
-        if ($request->filled('priority_id')) {
-            $query->where('ticket_priority_id', $request->input('priority_id'));
-        }
-
-        if ($request->filled('category_id')) {
-            $query->where('ticket_category_id', $request->input('category_id'));
-        }
-
-        if ($request->boolean('overdue')) {
-            $query->whereNotNull('due_at')
-                ->where('due_at', '<', now())
-                ->whereHas('status', function ($q) {
-                    $q->where('is_closed', false);
-                });
-        }
-
-        $tickets = $query->paginate(10)->withQueryString();
-
-        $statuses = TicketStatus::where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $priorities = TicketPriority::where('is_active', true)
-            ->orderBy('level')
-            ->get();
-
-        $categories = TicketCategory::where('is_active', true)
-            ->orderBy('name')
-            ->get();
-
-        return view('tickets.index', compact(
-            'tickets',
-            'statuses',
-            'priorities',
-            'categories'
-        ));
+        return $this->getTicketListView(
+            request: $request,
+            query: $query,
+            pageTitle: 'Tickets',
+            pageDescription: 'View and manage support tickets.'
+        );
     }
 
     /**
@@ -610,5 +567,127 @@ class TicketController extends Controller
         return redirect()
             ->route('tickets.show', $ticket)
             ->with('success', 'Ticket unassigned successfully.');
+    }
+
+    private function getTicketListView(Request $request, $query, string $pageTitle, string $pageDescription): View
+    {
+        if ($request->filled('search')) {
+            $search = $request->string('search')->toString();
+
+            $query->where(function ($q) use ($search) {
+                $q->where('ticket_no', 'ilike', "%{$search}%")
+                    ->orWhere('title', 'ilike', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status_id')) {
+            $query->where('ticket_status_id', $request->input('status_id'));
+        }
+
+        if ($request->filled('priority_id')) {
+            $query->where('ticket_priority_id', $request->input('priority_id'));
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('ticket_category_id', $request->input('category_id'));
+        }
+
+        if ($request->boolean('overdue')) {
+            $query->whereNotNull('due_at')
+                ->where('due_at', '<', now())
+                ->whereHas('status', function ($q) {
+                    $q->where('is_closed', false);
+                });
+        }
+
+        $tickets = $query->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $statuses = TicketStatus::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $priorities = TicketPriority::where('is_active', true)
+            ->orderBy('level')
+            ->get();
+
+        $categories = TicketCategory::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('tickets.index', compact(
+            'tickets',
+            'statuses',
+            'priorities',
+            'categories',
+            'pageTitle',
+            'pageDescription'
+        ));
+    }
+
+    public function myTickets(Request $request): View
+    {
+        $query = Ticket::with([
+            'requester',
+            'assignee',
+            'department',
+            'category',
+            'priority',
+            'status',
+        ])->where('requester_id', $request->user()->id);
+
+        return $this->getTicketListView(
+            request: $request,
+            query: $query,
+            pageTitle: 'My Tickets',
+            pageDescription: 'Tickets that you have submitted.'
+        );
+    }
+
+    public function assignedToMe(Request $request): View
+    {
+        if (! $request->user()->canManageTickets()) {
+            abort(403, 'You are not allowed to access assigned tickets.');
+        }
+
+        $query = Ticket::with([
+            'requester',
+            'assignee',
+            'department',
+            'category',
+            'priority',
+            'status',
+        ])->where('assignee_id', $request->user()->id);
+
+        return $this->getTicketListView(
+            request: $request,
+            query: $query,
+            pageTitle: 'Assigned to Me',
+            pageDescription: 'Tickets currently assigned to you.'
+        );
+    }
+
+    public function unassigned(Request $request): View
+    {
+        if (! $request->user()->canManageTickets()) {
+            abort(403, 'You are not allowed to access unassigned tickets.');
+        }
+
+        $query = Ticket::with([
+            'requester',
+            'assignee',
+            'department',
+            'category',
+            'priority',
+            'status',
+        ])->whereNull('assignee_id');
+
+        return $this->getTicketListView(
+            request: $request,
+            query: $query,
+            pageTitle: 'Unassigned Queue',
+            pageDescription: 'Tickets that have not been assigned to any agent yet.'
+        );
     }
 }

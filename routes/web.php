@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketCommentController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Admin\TicketCategoryController as AdminTicketCategoryController;
 use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
 use App\Http\Controllers\Admin\TicketPriorityController as AdminTicketPriorityController;
@@ -22,6 +23,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])
@@ -41,6 +43,15 @@ Route::middleware(['auth', 'active'])->group(function () {
 
     Route::patch('/tickets/{ticket}/unassign', [TicketController::class, 'unassign'])
         ->name('tickets.unassign');
+
+    Route::get('/tickets/my', [TicketController::class, 'myTickets'])
+        ->name('tickets.my');
+
+    Route::get('/tickets/assigned-to-me', [TicketController::class, 'assignedToMe'])
+        ->name('tickets.assigned-to-me');
+
+    Route::get('/tickets/unassigned', [TicketController::class, 'unassigned'])
+        ->name('tickets.unassigned');
     
     Route::resource('tickets', TicketController::class);
 

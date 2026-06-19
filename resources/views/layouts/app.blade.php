@@ -11,30 +11,40 @@
 </head>
 
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg app-navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
-                Helpdesk
+            <a class="navbar-brand app-navbar-brand" href="{{ route('dashboard') }}">
+                <span class="app-brand-mark" aria-hidden="true">
+                    <span class="app-brand-ticket"></span>
+                    <span class="app-brand-dot"></span>
+                </span>
+                <span>Helpdesk</span>
             </a>
 
-            <div class="d-flex align-items-center gap-3">
-                @auth
-                <span class="text-white small">
-                    {{ auth()->user()->name }}
-                    @if(auth()->user()->role)
-                    <span class="badge bg-secondary ms-1">
-                        {{ auth()->user()->role->display_name }}
-                    </span>
-                    @endif
-                </span>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <div class="app-user-info d-none d-md-flex">
+                    <div class="app-user-avatar">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+
+                    <div class="app-user-meta">
+                        <div class="app-user-name">
+                            {{ auth()->user()->name }}
+                        </div>
+
+                        <div class="app-user-role">
+                            {{ auth()->user()->role?->display_name ?? 'User' }}
+                        </div>
+                    </div>
+                </div>
 
                 <form method="POST" action="{{ route('logout') }}" class="mb-0">
                     @csrf
-                    <button type="submit" class="btn btn-outline-light btn-sm">
+
+                    <button type="submit" class="btn app-logout-btn">
                         Logout
                     </button>
                 </form>
-                @endauth
             </div>
         </div>
     </nav>
@@ -43,46 +53,91 @@
         <div class="row min-vh-100">
             @auth
             <aside class="col-md-3 col-lg-2 bg-white border-end p-3">
+                @php
+                $isTicketMenuOpen = request()->routeIs('tickets.*');
+                $isAdminMenuOpen = request()->routeIs('admin.*');
+                @endphp
+
                 <div class="list-group list-group-flush">
                     <a href="{{ route('dashboard') }}"
                         class="list-group-item list-group-item-action {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         Dashboard
                     </a>
 
-                    <a href="{{ route('tickets.index') }}"
-                        class="list-group-item list-group-item-action {{ request()->routeIs('tickets.*') ? 'active' : '' }}">
-                        Tickets
-                    </a>
-
                     @if(auth()->user()->canManageTickets())
-                    <div class="text-muted small text-uppercase px-3 mt-3 mb-2">
-                        Admin
+                    <a href="{{ route('reports.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                        Reports
+                    </a>
+                    @endif
+
+                    <button
+                        class="list-group-item list-group-item-action sidebar-menu-toggle {{ $isTicketMenuOpen ? 'active-parent' : '' }}"
+                        type="button" data-bs-toggle="collapse" data-bs-target="#ticketSubmenu"
+                        aria-expanded="{{ $isTicketMenuOpen ? 'true' : 'false' }}" aria-controls="ticketSubmenu">
+                        <span>Ticket</span>
+                        <span class="sidebar-menu-arrow">▾</span>
+                    </button>
+
+                    <div class="collapse {{ $isTicketMenuOpen ? 'show' : '' }}" id="ticketSubmenu">
+                        <a href="{{ route('tickets.index') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('tickets.index') ? 'active' : '' }}">
+                            All Tickets
+                        </a>
+
+                        <a href="{{ route('tickets.my') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('tickets.my') ? 'active' : '' }}">
+                            My Tickets
+                        </a>
+
+                        @if(auth()->user()->canManageTickets())
+                        <a href="{{ route('tickets.assigned-to-me') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('tickets.assigned-to-me') ? 'active' : '' }}">
+                            Assigned to Me
+                        </a>
+
+                        <a href="{{ route('tickets.unassigned') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('tickets.unassigned') ? 'active' : '' }}">
+                            Unassigned Queue
+                        </a>
+                        @endif
                     </div>
 
-                    <a href="{{ route('admin.users.index') }}"
-                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                        Users
-                    </a>
+                    @if(auth()->user()->canAccessAdminArea())
+                    <button
+                        class="list-group-item list-group-item-action sidebar-menu-toggle {{ $isAdminMenuOpen ? 'active-parent' : '' }}"
+                        type="button" data-bs-toggle="collapse" data-bs-target="#adminSubmenu"
+                        aria-expanded="{{ $isAdminMenuOpen ? 'true' : 'false' }}" aria-controls="adminSubmenu">
+                        <span>Admin</span>
+                        <span class="sidebar-menu-arrow">▾</span>
+                    </button>
 
-                    <a href="{{ route('admin.categories.index') }}"
-                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                        Categories
-                    </a>
+                    <div class="collapse {{ $isAdminMenuOpen ? 'show' : '' }}" id="adminSubmenu">
+                        <a href="{{ route('admin.users.index') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                            Users
+                        </a>
 
-                    <a href="{{ route('admin.departments.index') }}"
-                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}">
-                        Departments
-                    </a>
+                        <a href="{{ route('admin.categories.index') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                            Categories
+                        </a>
 
-                    <a href="{{ route('admin.priorities.index') }}"
-                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.priorities.*') ? 'active' : '' }}">
-                        Priorities
-                    </a>
+                        <a href="{{ route('admin.departments.index') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}">
+                            Departments
+                        </a>
 
-                    <a href="{{ route('admin.statuses.index') }}"
-                        class="list-group-item list-group-item-action {{ request()->routeIs('admin.statuses.*') ? 'active' : '' }}">
-                        Statuses
-                    </a>
+                        <a href="{{ route('admin.priorities.index') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('admin.priorities.*') ? 'active' : '' }}">
+                            Priorities
+                        </a>
+
+                        <a href="{{ route('admin.statuses.index') }}"
+                            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('admin.statuses.*') ? 'active' : '' }}">
+                            Statuses
+                        </a>
+                    </div>
                     @endif
                 </div>
             </aside>
