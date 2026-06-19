@@ -189,18 +189,18 @@
                     </div>
 
                     <div class="text-muted small">
-                        Select tickets from the table below and apply an action.
+                        <span id="selectedTicketCount">0</span> ticket(s) selected.
                     </div>
                 </div>
 
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 /*flex-wrap*/">
                     <select name="action" id="bulkActionSelect" class="form-select" required>
                         <option value="">Choose action</option>
                         <option value="assign_to_me">Assign to Me</option>
                         <option value="close">Close Tickets</option>
                     </select>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="bulkActionSubmit" disabled>
                         Apply
                     </button>
                 </div>

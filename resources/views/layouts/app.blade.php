@@ -127,7 +127,27 @@
 
     const bulkActionForm = document.getElementById('bulkActionForm');
     const bulkActionSelect = document.getElementById('bulkActionSelect');
+    const bulkActionSubmit = document.getElementById('bulkActionSubmit');
+    const selectedTicketCount = document.getElementById('selectedTicketCount');
     const selectAllTickets = document.getElementById('selectAllTickets');
+
+    function updateBulkActionState() {
+        if (!bulkActionForm) {
+            return;
+        }
+
+        const checkedTickets = document.querySelectorAll('.ticket-checkbox:checked');
+        const selectedCount = checkedTickets.length;
+        const hasAction = bulkActionSelect && bulkActionSelect.value !== '';
+
+        if (selectedTicketCount) {
+            selectedTicketCount.textContent = selectedCount;
+        }
+
+        if (bulkActionSubmit) {
+            bulkActionSubmit.disabled = selectedCount === 0 || !hasAction;
+        }
+    }
 
     function refreshBulkTicketCheckboxes() {
         if (!bulkActionForm || !bulkActionSelect) {
@@ -161,6 +181,8 @@
         if (selectAllTickets) {
             selectAllTickets.checked = false;
         }
+
+        updateBulkActionState();
     }
 
     if (bulkActionSelect) {
@@ -168,25 +190,43 @@
         refreshBulkTicketCheckboxes();
     }
 
+    document.querySelectorAll('.ticket-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateBulkActionState);
+    });
+
     if (selectAllTickets) {
         selectAllTickets.addEventListener('change', function() {
             document.querySelectorAll('.ticket-checkbox:not(:disabled)').forEach(function(checkbox) {
                 checkbox.checked = selectAllTickets.checked;
             });
+
+            updateBulkActionState();
         });
     }
 
     if (bulkActionForm) {
         bulkActionForm.addEventListener('submit', function(event) {
             const checkedTickets = document.querySelectorAll('.ticket-checkbox:checked');
+            const selectedCount = checkedTickets.length;
+            const action = bulkActionSelect ? bulkActionSelect.value : '';
 
-            if (checkedTickets.length === 0) {
+            if (selectedCount === 0) {
                 event.preventDefault();
                 alert('Please select at least one available ticket.');
                 return;
             }
 
-            if (!confirm('Are you sure you want to apply this bulk action?')) {
+            if (!action) {
+                event.preventDefault();
+                alert('Please choose a bulk action.');
+                return;
+            }
+
+            const actionLabel = action === 'assign_to_me' ?
+                'assign selected ticket(s) to you' :
+                'close selected ticket(s)';
+
+            if (!confirm(`Are you sure you want to ${actionLabel}? (${selectedCount} selected)`)) {
                 event.preventDefault();
             }
         });
