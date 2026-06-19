@@ -633,14 +633,22 @@ code {
     border: 1px solid rgba(255, 255, 255, 0.26);
 }
 
-.app-brand-ticket {
+.app-brand-mark .bi {
+    position: relative;
+    z-index: 1;
+    color: #ffffff;
+    font-size: 1.15rem;
+    line-height: 1;
+}
+
+/* .app-brand-ticket {
     position: relative;
     width: 18px;
     height: 14px;
     border-radius: 4px;
     background: #ffffff;
     box-shadow: 0 5px 12px rgba(15, 23, 42, 0.18);
-}
+} */
 
 .app-brand-ticket::before,
 .app-brand-ticket::after {
@@ -1471,4 +1479,38 @@ code {
         width: 100%;
         margin-top: 0.2rem;
     }
+}
+
+/* Bootstrap Icons */
+.bi {
+    line-height: 1;
+}
+
+.list-group-item .bi,
+.sidebar-menu-toggle .bi {
+    font-size: 0.95rem;
+    vertical-align: -0.1em;
+}
+
+.sidebar-submenu-item .bi {
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.sidebar-submenu-item.active .bi {
+    color: var(--app-primary);
+}
+
+.activity-icon .bi {
+    font-size: 0.82rem;
+    line-height: 1;
+}
+
+.comment-attachment-icon .bi {
+    font-size: 0.9rem;
+}
+
+.empty-state-icon .bi {
+    color: #94a3b8;
+    font-size: 2rem;
 }

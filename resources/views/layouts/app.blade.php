@@ -17,12 +17,13 @@
         <div class="container-fluid">
             <button class="btn app-mobile-menu-btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas"
                 data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
-                ☰
+                <i class="bi bi-list"></i>
             </button>
 
             <a class="navbar-brand app-navbar-brand" href="{{ route('dashboard') }}">
                 <span class="app-brand-mark" aria-hidden="true">
-                    <span class="app-brand-ticket"></span>
+                    <!-- <span class="app-brand-ticket"></span> -->
+                    <i class="bi bi-headset"></i>
                     <span class="app-brand-dot"></span>
                 </span>
 

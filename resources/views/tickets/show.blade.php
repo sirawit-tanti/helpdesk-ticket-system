@@ -218,7 +218,9 @@
                 </div>
                 @else
                 <div class="empty-state">
-                    <div class="empty-state-icon">💬</div>
+                    <div class="empty-state-icon">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
                     <div class="empty-state-title">No comments yet</div>
                     <div class="empty-state-text">
                         Add the first comment to start the conversation.
@@ -495,7 +497,9 @@
                 </div>
                 @else
                 <div class="empty-state">
-                    <div class="empty-state-icon">🕒</div>
+                    <div class="empty-state-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
                     <div class="empty-state-title">No activity logs yet</div>
                     <div class="empty-state-text">
                         Ticket activity will appear here.
