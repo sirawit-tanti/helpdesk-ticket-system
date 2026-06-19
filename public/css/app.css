@@ -1190,3 +1190,140 @@ code {
         padding: 1rem;
     }
 }
+
+/* Comment Timeline */
+.comment-timeline {
+    position: relative;
+    display: grid;
+    gap: 1.1rem;
+}
+
+.comment-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 0.85rem;
+}
+
+.comment-item::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 44px;
+    bottom: -18px;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.comment-item:last-child::before {
+    display: none;
+}
+
+.comment-avatar {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #ffffff;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #2563eb, #38bdf8);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+}
+
+.comment-bubble {
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: #ffffff;
+}
+
+.comment-internal .comment-bubble {
+    border-color: #fde68a;
+    background: #fffbeb;
+}
+
+.comment-internal .comment-avatar {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
+}
+
+.comment-author {
+    color: #0f172a;
+    font-size: 0.92rem;
+    font-weight: 850;
+}
+
+.comment-time {
+    margin-top: 0.1rem;
+    color: #94a3b8;
+    font-size: 0.76rem;
+    font-weight: 650;
+}
+
+.comment-message {
+    color: #334155;
+    font-size: 0.93rem;
+    line-height: 1.75;
+}
+
+.comment-attachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+    padding-top: 0.9rem;
+    border-top: 1px dashed #e5e7eb;
+}
+
+.comment-attachment-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    color: #334155;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    background: #f8fafc;
+}
+
+.comment-attachment-link:hover {
+    color: var(--app-primary);
+    border-color: #bfdbfe;
+    background: #eff6ff;
+}
+
+.comment-attachment-icon {
+    font-size: 0.9rem;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 2.5rem 1rem;
+    text-align: center;
+}
+
+.empty-state-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.empty-state-title {
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 850;
+}
+
+.empty-state-text {
+    margin-top: 0.25rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}

@@ -143,72 +143,102 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm mb-3">
-            <div class="card-header bg-white">
-                Comments
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div>
+                    Comments
+                </div>
+
+                <span class="badge bg-light text-dark border">
+                    {{ $ticket->comments->count() }}
+                </span>
             </div>
 
             <div class="card-body">
                 @if($ticket->comments->count())
-                <div class="d-flex flex-column gap-3 mb-4">
+                <div class="comment-timeline">
                     @foreach($ticket->comments as $comment)
-                    <div class="border rounded p-3 {{ $comment->is_internal ? 'bg-warning-subtle' : 'bg-light' }}">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div>
-                                <div class="fw-semibold">
-                                    {{ $comment->user?->name ?? 'Deleted User' }}
+                    <div class="comment-item {{ $comment->is_internal ? 'comment-internal' : '' }}">
+                        <div class="comment-avatar">
+                            {{ strtoupper(substr($comment->user?->name ?? 'U', 0, 1)) }}
+                        </div>
+
+                        <div class="comment-content">
+                            <div class="comment-bubble">
+                                <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                                    <div>
+                                        <div class="comment-author">
+                                            {{ $comment->user?->name ?? 'Unknown User' }}
+                                        </div>
+
+                                        <div class="comment-time">
+                                            {{ $comment->created_at?->format('Y-m-d H:i') }}
+                                        </div>
+                                    </div>
 
                                     @if($comment->is_internal)
-                                    <span class="badge bg-warning text-dark ms-2">
+                                    <span class="badge bg-warning text-dark">
                                         Internal Note
+                                    </span>
+                                    @else
+                                    <span class="badge bg-light text-dark border">
+                                        Comment
                                     </span>
                                     @endif
                                 </div>
 
-                                <div class="text-muted small">
-                                    {{ $comment->created_at->format('Y-m-d H:i') }}
+                                <div class="comment-message">
+                                    {!! nl2br(e($comment->message)) !!}
                                 </div>
+
+                                @if($comment->attachments->count())
+                                <div class="comment-attachments">
+                                    @foreach($comment->attachments as $attachment)
+                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
+                                        class="comment-attachment-link">
+                                        <span class="comment-attachment-icon">📎</span>
+
+                                        <span>
+                                            {{ $attachment->original_name }}
+                                        </span>
+
+                                        <span class="text-muted">
+                                            ({{ $attachment->formatted_file_size }})
+                                        </span>
+                                    </a>
+                                    @endforeach
+                                </div>
+                                @endif
                             </div>
                         </div>
-
-                        <div>
-                            {!! nl2br(e($comment->message)) !!}
-                        </div>
                     </div>
-                    @if($comment->attachments->count())
-                    <div class="mt-2">
-                        <div class="small text-muted mb-1">
-                            Attachments
-                        </div>
-
-                        <div class="d-flex flex-column gap-1">
-                            @foreach($comment->attachments as $attachment)
-                            <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
-                                class="small text-decoration-none">
-                                {{ $attachment->original_name }}
-                                <span class="text-muted">
-                                    ({{ $attachment->formatted_file_size }})
-                                </span>
-                            </a>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
                     @endforeach
                 </div>
                 @else
-                <p class="text-muted">
-                    No comments yet.
-                </p>
+                <div class="empty-state">
+                    <div class="empty-state-icon">💬</div>
+                    <div class="empty-state-title">No comments yet</div>
+                    <div class="empty-state-text">
+                        Add the first comment to start the conversation.
+                    </div>
+                </div>
                 @endif
+            </div>
+        </div>
 
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white">
+                Add Comment
+            </div>
+
+            <div class="card-body">
                 <form method="POST" action="{{ route('tickets.comments.store', $ticket) }}"
                     enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-3">
                         <label for="message" class="form-label">
-                            Add Comment
+                            Message
                         </label>
 
                         <textarea name="message" id="message" rows="4"
@@ -225,14 +255,14 @@
                     @if(auth()->user()->canManageTickets())
                     <div class="form-check mb-3">
                         <input type="checkbox" name="is_internal" id="is_internal" value="1" class="form-check-input"
-                            @checked(old('is_internal'))>
+                            {{ old('is_internal') ? 'checked' : '' }}>
 
                         <label for="is_internal" class="form-check-label">
                             Internal note
                         </label>
 
                         <div class="form-text">
-                            Internal notes are visible only to administrators and support agents.
+                            Internal notes are visible only to agents and admins.
                         </div>
                     </div>
                     @endif
@@ -247,8 +277,7 @@
                             multiple>
 
                         <div class="form-text">
-                            You can upload up to 5 files. Allowed types: jpg, png, pdf, txt, log, doc, docx, xls, xlsx.
-                            Max 5 MB each.
+                            You can upload up to 5 files. Supported: jpg, png, pdf, txt, doc, docx, xls, xlsx.
                         </div>
 
                         @error('attachments')
@@ -263,11 +292,10 @@
                         </div>
                         @enderror
                     </div>
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">
-                            Add Comment
-                        </button>
-                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Add Comment
+                    </button>
                 </form>
             </div>
         </div>
