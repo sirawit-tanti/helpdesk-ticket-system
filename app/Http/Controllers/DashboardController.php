@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Models\TicketActivityLog;
 use App\Models\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -63,6 +64,27 @@ class DashboardController extends Controller
             })
             ->count();
 
+        $recentActivitiesQuery = TicketActivityLog::with(['user', 'ticket'])
+            ->latest()
+            ->limit(8);
+
+        if ($user->isRequester()) {
+            $recentActivitiesQuery->whereHas('ticket', function ($query) use ($user) {
+                $query->where('requester_id', $user->id);
+            });
+        }
+
+        if ($user->isAgent()) {
+            $recentActivitiesQuery->whereHas('ticket', function ($query) use ($user) {
+                $query->where(function ($query) use ($user) {
+                    $query->where('assignee_id', $user->id)
+                        ->orWhereNull('assignee_id');
+                });
+            });
+        }
+
+        $recentActivities = $recentActivitiesQuery->get();
+
         return view('dashboard.index', compact(
             'totalTickets',
             'openTickets',
@@ -71,7 +93,8 @@ class DashboardController extends Controller
             'closedTickets',
             'highPriorityTickets',
             'recentTickets',
-            'overdueTickets'
+            'overdueTickets',
+            'recentActivities'
         ));
     }
 

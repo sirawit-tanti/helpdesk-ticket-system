@@ -11,9 +11,51 @@
         </p>
     </div>
 
-    <a href="{{ route('tickets.create') }}" class="btn btn-primary">
+    <!-- <a href="{{ route('tickets.create') }}" class="btn btn-primary">
         Create Ticket
-    </a>
+    </a> -->
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="h5 mb-1">Quick Actions</h2>
+                <p class="text-muted mb-0">
+                    Jump to common helpdesk tasks.
+                </p>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ route('tickets.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Create Ticket
+                </a>
+
+                <a href="{{ route('tickets.my') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-person-lines-fill me-1"></i>
+                    My Tickets
+                </a>
+
+                @if(auth()->user()->canManageTickets())
+                <a href="{{ route('tickets.assigned-to-me') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-person-check me-1"></i>
+                    Assigned to Me
+                </a>
+
+                <a href="{{ route('tickets.unassigned') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-inbox me-1"></i>
+                    Unassigned
+                </a>
+
+                <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-bar-chart-line me-1"></i>
+                    Reports
+                </a>
+                @endif
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row g-3 mb-4">
@@ -158,6 +200,86 @@
                 Create Ticket
             </a>
         </div>
+        @endif
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <div>
+            Recent Activity
+        </div>
+
+        <span class="badge bg-light text-dark border">
+            {{ $recentActivities->count() }}
+        </span>
+    </div>
+
+    <div class="card-body">
+        @if($recentActivities->count())
+        <div class="dashboard-activity-list">
+            @foreach($recentActivities as $activity)
+            @php
+            $activityIcon = match ($activity->action) {
+            'created' => 'bi-plus-lg',
+            'comment_added' => 'bi-chat-dots',
+            'internal_note_added' => 'bi-journal-text',
+            'resolved' => 'bi-check-lg',
+            'closed' => 'bi-lock',
+            'reopened' => 'bi-arrow-clockwise',
+            'attachment_added' => 'bi-paperclip',
+            'due_date_set' => 'bi-clock',
+            'updated' => 'bi-arrow-left-right',
+            default => 'bi-circle-fill',
+            };
+
+            $activityText = match ($activity->action) {
+            'created' => 'created a ticket',
+            'comment_added' => 'added a comment',
+            'internal_note_added' => 'added an internal note',
+            'resolved' => 'resolved a ticket',
+            'closed' => 'closed a ticket',
+            'reopened' => 'reopened a ticket',
+            'attachment_added' => 'added an attachment',
+            'due_date_set' => 'set a due date',
+            'updated' => $activity->field
+            ? 'updated ' . str_replace('_', ' ', $activity->field)
+            : 'updated a ticket',
+            default => str_replace('_', ' ', $activity->action),
+            };
+            @endphp
+
+            <div class="dashboard-activity-item">
+                <div class="dashboard-activity-icon">
+                    <i class="bi {{ $activityIcon }}"></i>
+                </div>
+
+                <div class="flex-grow-1">
+                    <div class="dashboard-activity-title">
+                        <span class="fw-semibold">
+                            {{ $activity->user?->name ?? 'System' }}
+                        </span>
+
+                        {{ $activityText }}
+
+                        @if($activity->ticket)
+                        <a href="{{ route('tickets.show', $activity->ticket) }}">
+                            {{ $activity->ticket->ticket_no }}
+                        </a>
+                        @endif
+                    </div>
+
+                    <div class="dashboard-activity-time">
+                        {{ $activity->created_at?->format('Y-m-d H:i') }}
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <p class="text-muted mb-0">
+            No recent activity.
+        </p>
         @endif
     </div>
 </div>

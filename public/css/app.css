@@ -1514,3 +1514,54 @@ code {
     color: #94a3b8;
     font-size: 2rem;
 }
+
+/* Dashboard Activity */
+.dashboard-activity-list {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.dashboard-activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.85rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.dashboard-activity-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    color: #2563eb;
+    background: #dbeafe;
+    flex-shrink: 0;
+}
+
+.dashboard-activity-title {
+    color: #334155;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.dashboard-activity-title a {
+    color: var(--app-primary);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.dashboard-activity-title a:hover {
+    text-decoration: underline;
+}
+
+.dashboard-activity-time {
+    margin-top: 0.15rem;
+    color: #94a3b8;
+    font-size: 0.76rem;
+    font-weight: 650;
+}
