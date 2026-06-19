@@ -492,7 +492,7 @@ code {
         font-size: 1.15rem;
     }
 }
-
+/*
 .sidebar-menu-toggle {
     display: flex;
     align-items: center;
@@ -562,7 +562,7 @@ code {
 
 .sidebar-submenu-item.active::before {
     background: var(--app-primary);
-}
+}*/
 
 /* Modern Navbar */
 .app-navbar {
@@ -960,5 +960,173 @@ code {
 
     .login-feature-item {
         align-items: flex-start;
+    }
+}
+
+/* Responsive Sidebar */
+.app-mobile-menu-btn {
+    color: #e5e7eb;
+    border: 1px solid rgba(226, 232, 240, 0.24);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: none;
+}
+
+.app-mobile-menu-btn:hover,
+.app-mobile-menu-btn:focus {
+    color: #ffffff;
+    border-color: rgba(248, 250, 252, 0.46);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.app-mobile-sidebar {
+    border-right: 0;
+}
+
+.app-mobile-sidebar .offcanvas-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.app-mobile-sidebar .offcanvas-title {
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+@media (max-width: 991.98px) {
+    main {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .app-navbar-brand {
+        font-size: 0.95rem;
+    }
+
+    .app-brand-text {
+        display: inline;
+    }
+
+    .app-user-info {
+        display: none !important;
+    }
+
+    .app-profile-btn {
+        display: none;
+    }
+}
+
+/* Desktop Layout */
+.app-sidebar {
+    min-height: calc(100vh - 64px);
+    padding: 1rem 0.75rem;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+}
+
+.app-main-content {
+    min-height: calc(100vh - 64px);
+    padding: 1.5rem;
+}
+
+.app-guest-content {
+    min-height: 100vh;
+    padding: 0;
+}
+
+/* Sidebar Menu */
+.app-sidebar .list-group,
+.app-mobile-sidebar .list-group {
+    gap: 0.25rem;
+}
+
+.app-sidebar .list-group-item,
+.app-mobile-sidebar .list-group-item {
+    margin-bottom: 0.2rem;
+    border: 0;
+    border-radius: 12px !important;
+    color: #475569;
+    font-size: 0.88rem;
+    font-weight: 700;
+    background: transparent;
+}
+
+.app-sidebar .list-group-item:hover,
+.app-mobile-sidebar .list-group-item:hover {
+    color: var(--app-primary);
+    background: rgba(37, 99, 235, 0.08);
+    transform: translateX(2px);
+}
+
+.app-sidebar .list-group-item.active,
+.app-mobile-sidebar .list-group-item.active {
+    color: var(--app-primary);
+    background: rgba(37, 99, 235, 0.12);
+    box-shadow: none;
+}
+
+/* Parent menu: Ticket / Admin */
+.sidebar-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border: 0;
+    color: #475569;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-align: left;
+    background: transparent;
+}
+
+.sidebar-menu-toggle.active-parent {
+    color: var(--app-primary);
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.sidebar-menu-arrow {
+    color: #94a3b8;
+    font-size: 0.78rem;
+    transition: transform 0.18s ease;
+}
+
+.sidebar-menu-toggle[aria-expanded="true"] .sidebar-menu-arrow {
+    transform: rotate(180deg);
+    color: var(--app-primary);
+}
+
+/* Sub menu */
+.sidebar-submenu-item {
+    padding-left: 2.1rem !important;
+    color: #64748b !important;
+    font-size: 0.84rem !important;
+    font-weight: 650 !important;
+}
+
+.sidebar-submenu-item::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 0.55rem;
+    border-radius: 999px;
+    background: #cbd5e1;
+    vertical-align: middle;
+}
+
+.sidebar-submenu-item.active {
+    color: var(--app-primary) !important;
+    background: rgba(37, 99, 235, 0.1) !important;
+    font-weight: 800 !important;
+}
+
+.sidebar-submenu-item.active::before {
+    background: var(--app-primary);
+}
+
+/* Mobile */
+@media (max-width: 991.98px) {
+    .app-main-content {
+        padding: 1rem;
     }
 }
