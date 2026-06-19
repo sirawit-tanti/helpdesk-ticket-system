@@ -11,6 +11,7 @@
 </head>
 
 <body class="bg-light">
+    @auth
     <nav class="navbar navbar-expand-lg app-navbar">
         <div class="container-fluid">
             <a class="navbar-brand app-navbar-brand" href="{{ route('dashboard') }}">
@@ -54,6 +55,7 @@
             </div>
         </div>
     </nav>
+    @endauth
 
     <div class="container-fluid">
         <div class="row min-vh-100">

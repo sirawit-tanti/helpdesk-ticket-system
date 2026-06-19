@@ -3,72 +3,108 @@
 @section('title', 'Login - Helpdesk Ticket System')
 
 @section('content')
-<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-md-5 col-lg-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <h1 class="h4 mb-1 text-center">Helpdesk Ticket System</h1>
-                <p class="text-muted text-center mb-4">
-                    Sign in to continue
-                </p>
+<div class="login-page">
+    <div class="login-shell">
+        <div class="login-hero">
+            <div class="login-brand-badge">
+                <span class="login-brand-icon">✓</span>
+                Helpdesk Ticket System
+            </div>
 
-                @if($errors->any())
-                <div class="alert alert-danger">
-                    {{ $errors->first() }}
+            <h1 class="login-title">
+                Manage support tickets with clarity.
+            </h1>
+
+            <p class="login-description">
+                Track requests, assign agents, monitor SLA, and review reports from one simple dashboard.
+            </p>
+
+            <div class="login-feature-list">
+                <div class="login-feature-item">
+                    <span>01</span>
+                    Ticket workflow and assignment
                 </div>
-                @endif
 
-                <form method="POST" action="{{ route('login.store') }}">
-                    @csrf
+                <div class="login-feature-item">
+                    <span>02</span>
+                    SLA tracking and overdue visibility
+                </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
+                <div class="login-feature-item">
+                    <span>03</span>
+                    Reports with CSV and PDF export
+                </div>
+            </div>
+        </div>
 
-                        <input type="email" name="email" id="email" value="{{ old('email') }}"
-                            class="form-control @error('email') is-invalid @enderror" required autofocus>
+        <div class="login-card">
+            <div class="mb-4">
+                <h2 class="login-card-title">
+                    Welcome back
+                </h2>
 
-                        @error('email')
-                        <div class="invalid-feedback">
+                <p class="login-card-text">
+                    Sign in to continue to your workspace.
+                </p>
+            </div>
+
+            <form method="POST" action="{{ route('login.store') }}">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">
+                        Email Address
+                    </label>
+
+                    <input type="email" name="email" id="email" value="{{ old('email') }}"
+                        class="form-control @error('email') is-invalid @enderror" placeholder="admin@example.com"
+                        required autofocus>
+
+                    @error('email')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">
+                        Password
+                    </label>
+
+                    <div class="input-group">
+                        <input type="password" name="password" id="password"
+                            class="form-control @error('password') is-invalid @enderror"
+                            placeholder="Enter your password" required>
+
+                        <button type="button" class="btn btn-outline-secondary password-toggle-btn"
+                            data-password-toggle="password">
+                            Show
+                        </button>
+
+                        @error('password')
+                        <div class="invalid-feedback d-block">
                             {{ $message }}
                         </div>
                         @enderror
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-
-                        <div class="input-group">
-                            <input type="password" name="password" id="password"
-                                class="form-control @error('password') is-invalid @enderror" required>
-
-                            <button type="button" class="btn btn-outline-secondary password-toggle-btn"
-                                data-password-toggle="password">
-                                Show
-                            </button>
-
-                            @error('password')
-                            <div class="invalid-feedback d-block">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-check mb-3">
-                        <input type="checkbox" name="remember" id="remember" class="form-check-input" value="1">
-
-                        <label for="remember" class="form-check-label">
-                            Remember me
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">
-                        Login
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Sign In
                     </button>
-                </form>
+                </div>
+            </form>
 
-                <div class="mt-4 small text-muted text-center">
-                    Demo: admin@example.com / password
+            <div class="login-demo-box mt-4">
+                <div class="text-muted small mb-2">
+                    Demo Account
+                </div>
+
+                <div class="d-flex justify-content-between gap-3 small">
+                    <span class="fw-semibold">admin@example.com</span>
+                    <span class="text-muted">password</span>
                 </div>
             </div>
         </div>
