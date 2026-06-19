@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
@@ -102,5 +103,106 @@ class ReportController extends Controller
             'dateFrom',
             'dateTo'
         ));
+    }
+
+    public function export(Request $request): StreamedResponse {
+        if (! $request->user()->canManageTickets()) {
+            abort(403, 'You are not allowed to export reports.');
+        }
+
+        $validated = $request->validate([
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+        ]);
+
+        $dateFrom = $validated['date_from'] ?? null;
+        $dateTo = $validated['date_to'] ?? null;
+
+        $baseQuery = Ticket::query();
+
+        if ($request->user()->isAgent()) {
+            $baseQuery->where(function ($query) use ($request) {
+                $query->where('assignee_id', $request->user()->id)
+                    ->orWhereNull('assignee_id');
+            });
+        }
+
+        if ($dateFrom) {
+            $baseQuery->whereDate('tickets.created_at', '>=', $dateFrom);
+        }
+
+        if ($dateTo) {
+            $baseQuery->whereDate('tickets.created_at', '<=', $dateTo);
+        }
+
+        $tickets = (clone $baseQuery)
+            ->with([
+                'requester',
+                'assignee',
+                'department',
+                'category',
+                'priority',
+                'status',
+            ])
+            ->latest('tickets.created_at')
+            ->get();
+
+        $fileName = 'ticket-report-' . now()->format('Ymd-His') . '.csv';
+
+        return response()->streamDownload(function () use ($tickets, $dateFrom, $dateTo) {
+            $handle = fopen('php://output', 'w');
+
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            fputcsv($handle, ['Helpdesk Ticket Report']);
+
+            fputcsv($handle, [
+                'Date From',
+                $dateFrom ?? 'All',
+            ]);
+
+            fputcsv($handle, [
+                'Date To',
+                $dateTo ?? 'All',
+            ]);
+
+            fputcsv($handle, []);
+
+            fputcsv($handle, [
+                'Ticket No',
+                'Title',
+                'Requester',
+                'Assignee',
+                'Department',
+                'Category',
+                'Priority',
+                'Status',
+                'Due Date',
+                'Resolved At',
+                'Closed At',
+                'Created At',
+            ]);
+
+            foreach ($tickets as $ticket) {
+                fputcsv($handle, [
+                    $ticket->ticket_no,
+                    $ticket->title,
+                    $ticket->requester?->name ?? '-',
+                    $ticket->assignee?->name ?? 'Unassigned',
+                    $ticket->department?->name ?? '-',
+                    $ticket->category?->name ?? '-',
+                    $ticket->priority?->name ?? '-',
+                    $ticket->status?->name ?? '-',
+                    $ticket->due_at?->format('Y-m-d H:i') ?? '-',
+                    $ticket->resolved_at?->format('Y-m-d H:i') ?? '-',
+                    $ticket->closed_at?->format('Y-m-d H:i') ?? '-',
+                    $ticket->created_at?->format('Y-m-d H:i') ?? '-',
+                ]);
+            }
+
+            fclose($handle);
+        }, $fileName, [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 }

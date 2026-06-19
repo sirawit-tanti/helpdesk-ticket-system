@@ -11,9 +11,15 @@
         </p>
     </div>
 
-    <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary">
-        Back to Tickets
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('reports.export', request()->only(['date_from', 'date_to'])) }}" class="btn btn-primary">
+            Export CSV
+        </a>
+
+        <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary">
+            Back to Tickets
+        </a>
+    </div>
 </div>
 
 <div class="card border-0 shadow-sm mb-4">
