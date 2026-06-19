@@ -15,6 +15,14 @@ class ReportController extends Controller
             abort(403, 'You are not allowed to access reports.');
         }
 
+        $validated = $request->validate([
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+        ]);
+
+        $dateFrom = $validated['date_from'] ?? null;
+        $dateTo = $validated['date_to'] ?? null;
+
         $baseQuery = Ticket::query();
 
         if ($request->user()->isAgent()) {
@@ -22,6 +30,14 @@ class ReportController extends Controller
                 $query->where('assignee_id', $request->user()->id)
                     ->orWhereNull('assignee_id');
             });
+        }
+
+        if ($dateFrom) {
+            $baseQuery->whereDate('tickets.created_at', '>=', $dateFrom);
+        }
+
+        if ($dateTo) {
+            $baseQuery->whereDate('tickets.created_at', '<=', $dateTo);
         }
 
         $totalTickets = (clone $baseQuery)->count();
@@ -82,7 +98,9 @@ class ReportController extends Controller
             'overdueTickets',
             'statusReports',
             'priorityReports',
-            'categoryReports'
+            'categoryReports',
+            'dateFrom',
+            'dateTo'
         ));
     }
 }

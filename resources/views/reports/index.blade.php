@@ -3,7 +3,7 @@
 @section('title', 'Reports - Helpdesk Ticket System')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-start mb-4">
     <div>
         <h1 class="h3 mb-1">Reports</h1>
         <p class="text-muted mb-0">
@@ -15,6 +15,69 @@
         Back to Tickets
     </a>
 </div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ route('reports.index') }}">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="date_from" class="form-label">
+                        Date From
+                    </label>
+
+                    <input type="date" name="date_from" id="date_from" value="{{ old('date_from', $dateFrom) }}"
+                        class="form-control @error('date_from') is-invalid @enderror">
+
+                    @error('date_from')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <label for="date_to" class="form-label">
+                        Date To
+                    </label>
+
+                    <input type="date" name="date_to" id="date_to" value="{{ old('date_to', $dateTo) }}"
+                        class="form-control @error('date_to') is-invalid @enderror">
+
+                    @error('date_to')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            Apply Filter
+                        </button>
+
+                        <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary">
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if($dateFrom || $dateTo)
+<div class="alert alert-info">
+    Showing reports
+    @if($dateFrom)
+    from <span class="fw-semibold">{{ $dateFrom }}</span>
+    @endif
+
+    @if($dateTo)
+    to <span class="fw-semibold">{{ $dateTo }}</span>
+    @endif
+</div>
+@endif
 
 <div class="row g-3 mb-4">
     <div class="col-md-3">
@@ -85,7 +148,8 @@
                         </div>
 
                         <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-{{ $report->color }}" style="width: {{ $percentage }}%;"></div>
+                            <div class="progress-bar bg-{{ $report->color }}"
+                                style="--progress-width: {{ $percentage }}%; width: var(--progress-width);"></div>
                         </div>
 
                         <div class="text-muted small mt-1">
@@ -131,7 +195,8 @@
                         </div>
 
                         <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-{{ $report->color }}" style="width: {{ $percentage }}%;"></div>
+                            <div class="progress-bar bg-{{ $report->color }}"
+                                style="--progress-width: {{ $percentage }}%; width: var(--progress-width);"></div>
                         </div>
 
                         <div class="text-muted small mt-1">
@@ -175,7 +240,8 @@
                         </div>
 
                         <div class="progress" style="height: 8px;">
-                            <div class="progress-bar" style="width: {{ $percentage }}%;"></div>
+                            <div class="progress-bar"
+                                style="--progress-width: {{ $percentage }}%; width: var(--progress-width);"></div>
                         </div>
 
                         <div class="text-muted small mt-1">
