@@ -196,7 +196,9 @@
                                     @foreach($comment->attachments as $attachment)
                                     <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
                                         class="comment-attachment-link">
-                                        <span class="comment-attachment-icon">📎</span>
+                                        <span class="comment-attachment-icon">
+                                            <i class="bi bi-paperclip"></i>
+                                        </span>
 
                                         <span>
                                             {{ $attachment->original_name }}
@@ -377,71 +379,128 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm mt-3">
-            <div class="card-header bg-white">
-                Activity Log
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div>
+                    Activity Logs
+                </div>
+
+                <span class="badge bg-light text-dark border">
+                    {{ $ticket->activityLogs->count() }}
+                </span>
             </div>
 
             <div class="card-body">
                 @if($ticket->activityLogs->count())
-                <div class="d-flex flex-column gap-3">
+                <div class="activity-timeline">
                     @foreach($ticket->activityLogs as $log)
-                    <div class="border-start border-3 ps-3">
-                        <div class="small fw-semibold">
-                            {{ $log->user?->name ?? 'System' }}
+                    @php
+                    $activityIcon = match ($log->action) {
+                    'created' => 'bi-plus-lg',
+                    'comment_added' => 'bi-chat-dots',
+                    'internal_note_added' => 'bi-journal-text',
+                    'resolved' => 'bi-check-lg',
+                    'closed' => 'bi-lock',
+                    'reopened' => 'bi-arrow-clockwise',
+                    'attachment_added' => 'bi-paperclip',
+                    'due_date_set' => 'bi-clock',
+                    'updated' => 'bi-arrow-left-right',
+                    default => 'bi-circle-fill',
+                    };
+
+                    $activityClass = match ($log->action) {
+                    'created' => 'activity-created',
+                    'resolved' => 'activity-success',
+                    'closed' => 'activity-closed',
+                    'reopened' => 'activity-warning',
+                    'internal_note_added' => 'activity-warning',
+                    'attachment_added' => 'activity-info',
+                    'due_date_set' => 'activity-info',
+                    'updated' => 'activity-updated',
+                    default => 'activity-default',
+                    };
+                    @endphp
+
+                    <div class="activity-item {{ $activityClass }}">
+                        <div class="activity-icon">
+                            <i class="bi {{ $activityIcon }}"></i>
                         </div>
 
-                        <div class="small">
-                            @if($log->action === 'created')
-                            Created this ticket.
+                        <div class="activity-content">
+                            <div class="activity-card">
+                                <div class="d-flex justify-content-between align-items-start gap-3 mb-1">
+                                    <div class="activity-title">
+                                        @if($log->action === 'created')
+                                        Created this ticket
+                                        @elseif($log->action === 'comment_added')
+                                        Added a comment
+                                        @elseif($log->action === 'internal_note_added')
+                                        Added an internal note
+                                        @elseif($log->action === 'resolved')
+                                        Resolved this ticket
+                                        @elseif($log->action === 'closed')
+                                        Closed this ticket
+                                        @elseif($log->action === 'reopened')
+                                        Reopened this ticket
+                                        @elseif($log->action === 'attachment_added')
+                                        Added an attachment
+                                        @elseif($log->action === 'due_date_set')
+                                        Set due date
+                                        @elseif($log->action === 'updated' && $log->field)
+                                        Updated {{ ucwords(str_replace('_', ' ', $log->field)) }}
+                                        @elseif($log->action === 'updated')
+                                        Updated this ticket
+                                        @else
+                                        {{ ucwords(str_replace('_', ' ', $log->action)) }}
+                                        @endif
+                                    </div>
 
-                            @elseif($log->action === 'comment_added')
-                            Added a comment.
+                                    <div class="activity-time">
+                                        {{ $log->created_at?->format('Y-m-d H:i') }}
+                                    </div>
+                                </div>
 
-                            @elseif($log->action === 'internal_note_added')
-                            Added an internal note.
+                                <div class="activity-meta">
+                                    By
+                                    <span class="fw-semibold">
+                                        {{ $log->user?->name ?? 'System' }}
+                                    </span>
+                                </div>
 
-                            @elseif($log->action === 'resolved')
-                            Resolved this ticket.
+                                @if($log->action === 'updated' && $log->field)
+                                <div class="activity-change mt-2">
+                                    <span class="activity-old">
+                                        {{ $log->old_value ?? '-' }}
+                                    </span>
 
-                            @elseif($log->action === 'closed')
-                            Closed this ticket.
+                                    <span class="activity-arrow">
+                                        →
+                                    </span>
 
-                            @elseif($log->action === 'reopened')
-                            Reopened this ticket.
-
-                            @elseif($log->action === 'due_date_set')
-                            Set Due Date to
-                            <span class="fw-semibold">{{ $log->new_value ?? '-' }}</span>.
-
-                            @elseif(in_array($log->action, ['updated', 'update'], true) && $log->field)
-                            Changed {{ ucwords(str_replace('_', ' ', $log->field)) }}
-                            from
-                            <span class="fw-semibold">{{ $log->old_value ?? '-' }}</span>
-                            to
-                            <span class="fw-semibold">{{ $log->new_value ?? '-' }}</span>.
-
-                            @elseif($log->action === 'attachment_added')
-                            Added an attachment.
-
-                            @elseif($log->action === 'updated')
-                            Updated this ticket.
-
-                            @else
-                            {{ ucwords(str_replace('_', ' ', $log->action)) }}.
-                            @endif
-                        </div>
-
-                        <div class="text-muted small">
-                            {{ $log->created_at->format('Y-m-d H:i') }}
+                                    <span class="activity-new">
+                                        {{ $log->new_value ?? '-' }}
+                                    </span>
+                                </div>
+                                @elseif($log->action === 'due_date_set')
+                                <div class="activity-change mt-2">
+                                    <span class="activity-new">
+                                        {{ $log->new_value ?? '-' }}
+                                    </span>
+                                </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
                 @else
-                <p class="text-muted mb-0">
-                    No activity yet.
-                </p>
+                <div class="empty-state">
+                    <div class="empty-state-icon">🕒</div>
+                    <div class="empty-state-title">No activity logs yet</div>
+                    <div class="empty-state-text">
+                        Ticket activity will appear here.
+                    </div>
+                </div>
                 @endif
             </div>
         </div>
