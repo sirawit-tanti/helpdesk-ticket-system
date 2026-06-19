@@ -22,6 +22,7 @@
             </a>
 
             <div class="ms-auto d-flex align-items-center gap-3">
+                @auth
                 <div class="app-user-info d-none d-md-flex">
                     <div class="app-user-avatar">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
@@ -38,6 +39,10 @@
                     </div>
                 </div>
 
+                <a href="{{ route('profile.edit') }}" class="btn app-profile-btn">
+                    Profile
+                </a>
+
                 <form method="POST" action="{{ route('logout') }}" class="mb-0">
                     @csrf
 
@@ -45,6 +50,7 @@
                         Logout
                     </button>
                 </form>
+                @endauth
             </div>
         </div>
     </nav>

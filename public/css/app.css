@@ -749,3 +749,18 @@ code {
         font-size: 0.8rem;
     }
 }
+
+.app-profile-btn {
+    color: #0f172a;
+    border: 1px solid rgba(226, 232, 240, 0.65);
+    background: #f8fafc;
+    box-shadow: none;
+}
+
+.app-profile-btn:hover,
+.app-profile-btn:focus {
+    color: #0f172a;
+    border-color: #bfdbfe;
+    background: #dbeafe;
+    transform: translateY(-1px);
+}
