@@ -1111,25 +1111,10 @@ code {
     font-weight: 650 !important;
 }
 
-.sidebar-submenu-item::before {
-    content: "";
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    margin-right: 0.55rem;
-    border-radius: 999px;
-    background: #cbd5e1;
-    vertical-align: middle;
-}
-
 .sidebar-submenu-item.active {
     color: var(--app-primary) !important;
     background: rgba(37, 99, 235, 0.1) !important;
     font-weight: 800 !important;
-}
-
-.sidebar-submenu-item.active::before {
-    background: var(--app-primary);
 }
 
 /* Mobile */

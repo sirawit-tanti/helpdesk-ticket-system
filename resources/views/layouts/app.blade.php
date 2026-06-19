@@ -125,17 +125,56 @@
         });
     });
 
+    const bulkActionForm = document.getElementById('bulkActionForm');
+    const bulkActionSelect = document.getElementById('bulkActionSelect');
     const selectAllTickets = document.getElementById('selectAllTickets');
+
+    function refreshBulkTicketCheckboxes() {
+        if (!bulkActionForm || !bulkActionSelect) {
+            return;
+        }
+
+        const action = bulkActionSelect.value;
+        const currentUserId = bulkActionForm.getAttribute('data-current-user-id');
+
+        document.querySelectorAll('.ticket-checkbox').forEach(function(checkbox) {
+            const assigneeId = checkbox.getAttribute('data-assignee-id');
+            const isClosed = checkbox.getAttribute('data-is-closed') === '1';
+
+            let shouldDisable = false;
+
+            if (action === 'assign_to_me' && assigneeId === currentUserId) {
+                shouldDisable = true;
+            }
+
+            if (action === 'close' && isClosed) {
+                shouldDisable = true;
+            }
+
+            checkbox.disabled = shouldDisable;
+
+            if (shouldDisable) {
+                checkbox.checked = false;
+            }
+        });
+
+        if (selectAllTickets) {
+            selectAllTickets.checked = false;
+        }
+    }
+
+    if (bulkActionSelect) {
+        bulkActionSelect.addEventListener('change', refreshBulkTicketCheckboxes);
+        refreshBulkTicketCheckboxes();
+    }
 
     if (selectAllTickets) {
         selectAllTickets.addEventListener('change', function() {
-            document.querySelectorAll('.ticket-checkbox').forEach(function(checkbox) {
+            document.querySelectorAll('.ticket-checkbox:not(:disabled)').forEach(function(checkbox) {
                 checkbox.checked = selectAllTickets.checked;
             });
         });
     }
-
-    const bulkActionForm = document.getElementById('bulkActionForm');
 
     if (bulkActionForm) {
         bulkActionForm.addEventListener('submit', function(event) {
@@ -143,7 +182,7 @@
 
             if (checkedTickets.length === 0) {
                 event.preventDefault();
-                alert('Please select at least one ticket.');
+                alert('Please select at least one available ticket.');
                 return;
             }
 

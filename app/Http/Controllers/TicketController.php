@@ -716,6 +716,8 @@ class TicketController extends Controller
         }
 
         if ($validated['action'] === 'assign_to_me') {
+            $updatedCount = 0;
+
             foreach ($tickets as $ticket) {
                 $oldAssignee = $ticket->assignee?->name ?? 'Unassigned';
 
@@ -734,15 +736,24 @@ class TicketController extends Controller
                     oldValue: $oldAssignee,
                     newValue: $user->name
                 );
+
+                $updatedCount++;
+            }
+
+            if ($updatedCount === 0) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'No tickets were updated.');
             }
 
             return redirect()
                 ->back()
-                ->with('success', 'Selected tickets assigned to you successfully.');
+                ->with('success', '{$updatedCount} ticket(s) assigned to you successfully.');
         }
 
         if ($validated['action'] === 'close') {
             $closedStatus = TicketStatus::where('name', 'Closed')->firstOrFail();
+            $updatedCount = 0;
 
             foreach ($tickets as $ticket) {
                 $oldStatus = $ticket->status?->name ?? '-';
@@ -766,11 +777,19 @@ class TicketController extends Controller
                 );
 
                 $activityLogger->closed($ticket, $user->id);
+
+                $updatedCount++;
+            }
+
+            if ($updatedCount === 0) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'No tickets were updated.');
             }
 
             return redirect()
                 ->back()
-                ->with('success', 'Selected tickets closed successfully.');
+                ->with('success', '{$updatedCount} ticket(s) closed successfully.');
         }
 
         return redirect()

@@ -131,7 +131,8 @@
 @endif
 
 @if(auth()->user()->canManageTickets())
-<form method="POST" action="{{ route('tickets.bulk-action') }}" id="bulkActionForm">
+<form method="POST" action="{{ route('tickets.bulk-action') }}" id="bulkActionForm"
+    data-current-user-id="{{ auth()->id() }}">
     @csrf
     @method('PATCH')
 
@@ -149,7 +150,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <select name="action" class="form-select" required>
+                    <select name="action" id="bulkActionSelect" class="form-select" required>
                         <option value="">Choose action</option>
                         <option value="assign_to_me">Assign to Me</option>
                         <option value="close">Close Tickets</option>
@@ -194,7 +195,9 @@
                             @if(auth()->user()->canManageTickets())
                             <td>
                                 <input type="checkbox" name="ticket_ids[]" value="{{ $ticket->id }}"
-                                    class="form-check-input ticket-checkbox">
+                                    class="form-check-input ticket-checkbox"
+                                    data-assignee-id="{{ $ticket->assignee_id }}"
+                                    data-is-closed="{{ $ticket->isClosed() ? '1' : '0' }}">
                             </td>
                             @endif
                             <td class="fw-semibold">
