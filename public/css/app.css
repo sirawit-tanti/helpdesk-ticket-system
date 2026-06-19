@@ -1130,3 +1130,63 @@ code {
         padding: 1rem;
     }
 }
+
+/* Ticket Detail */
+.ticket-detail-header {
+    padding: 1.25rem;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 20px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(37, 99, 235, 0.08),
+            transparent 30%
+        ),
+        #ffffff;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+.ticket-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.ticket-info-item {
+    padding: 0.9rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.ticket-info-label {
+    margin-bottom: 0.25rem;
+    color: #64748b;
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ticket-info-value {
+    color: #0f172a;
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.ticket-description {
+    color: #334155;
+    font-size: 0.95rem;
+    line-height: 1.85;
+    white-space: normal;
+}
+
+@media (max-width: 768px) {
+    .ticket-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ticket-detail-header {
+        padding: 1rem;
+    }
+}

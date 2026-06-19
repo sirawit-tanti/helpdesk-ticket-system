@@ -3,86 +3,115 @@
 @section('title', $ticket->ticket_no . ' - Helpdesk Ticket System')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="h3 mb-1">{{ $ticket->ticket_no }}</h1>
-        <p class="text-muted mb-0">
-            {{ $ticket->title }}
-        </p>
-    </div>
+<div class="ticket-detail-header mb-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+        <div>
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                <span class="badge bg-light text-dark border">
+                    {{ $ticket->ticket_no }}
+                </span>
 
-    <div class="d-flex gap-2">
-        @if(auth()->user()->canManageTickets())
-        <a href="{{ route('tickets.edit', $ticket) }}" class="btn btn-primary">
-            Edit Ticket
-        </a>
-        @endif
+                <span class="badge bg-{{ $ticket->status?->color ?? 'secondary' }}">
+                    {{ $ticket->status?->name ?? '-' }}
+                </span>
 
-        <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary">
-            Back to Tickets
-        </a>
+                <span class="badge bg-{{ $ticket->priority?->color ?? 'secondary' }}">
+                    {{ $ticket->priority?->name ?? '-' }}
+                </span>
+
+                @if($ticket->due_at)
+                <span class="badge bg-{{ $ticket->due_status_color }}">
+                    {{ $ticket->due_status_label }}
+                </span>
+                @endif
+            </div>
+
+            <h1 class="h3 mb-2">
+                {{ $ticket->title }}
+            </h1>
+
+            <p class="text-muted mb-0">
+                Created by
+                <span class="fw-semibold">{{ $ticket->requester?->name ?? '-' }}</span>
+                on
+                <span class="fw-semibold">{{ $ticket->created_at?->format('Y-m-d H:i') }}</span>
+            </p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary">
+                Back
+            </a>
+
+            @if(auth()->user()->canManageTickets())
+            <a href="{{ route('tickets.edit', $ticket) }}" class="btn btn-primary">
+                Edit Ticket
+            </a>
+            @endif
+        </div>
     </div>
 </div>
 
 @if(auth()->user()->canManageTickets())
-<div class="d-flex flex-wrap gap-2">
-    @if((int) $ticket->assignee_id !== (int) auth()->id())
-    <form method="POST" action="{{ route('tickets.assign-to-me', $ticket) }}">
-        @csrf
-        @method('PATCH')
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white">
+        Workflow Actions
+    </div>
 
-        <button type="submit" class="btn btn-outline-primary">
-            Assign to Me
-        </button>
-    </form>
-    @endif
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+            @if((int) $ticket->assignee_id !== (int) auth()->id())
+            <form method="POST" action="{{ route('tickets.assign-to-me', $ticket) }}">
+                @csrf
+                @method('PATCH')
 
-    @if($ticket->assignee_id !== null)
-    <form method="POST" action="{{ route('tickets.unassign', $ticket) }}">
-        @csrf
-        @method('PATCH')
+                <button type="submit" class="btn btn-outline-success">
+                    Assign to Me
+                </button>
+            </form>
+            @endif
 
-        <button type="submit" class="btn btn-outline-secondary"
-            onclick="return confirm('Are you sure you want to unassign this ticket?');">
-            Unassign
-        </button>
-    </form>
-    @endif
-    @if(! $ticket->status?->is_closed && $ticket->status?->name !== 'Resolved')
-    <form method="POST" action="{{ route('tickets.resolve', $ticket) }}">
-        @csrf
-        @method('PATCH')
+            @if($ticket->assignee_id !== null)
+            <form method="POST" action="{{ route('tickets.unassign', $ticket) }}">
+                @csrf
+                @method('PATCH')
 
-        <button type="submit" class="btn btn-success"
-            onclick="return confirm('Are you sure you want to resolve this ticket?');">
-            Resolve Ticket
-        </button>
-    </form>
-    @endif
+                <button type="submit" class="btn btn-outline-secondary">
+                    Unassign
+                </button>
+            </form>
+            @endif
 
-    @if($ticket->status?->name !== 'Closed')
-    <form method="POST" action="{{ route('tickets.close', $ticket) }}">
-        @csrf
-        @method('PATCH')
+            @if(! $ticket->isClosed())
+            <form method="POST" action="{{ route('tickets.resolve', $ticket) }}">
+                @csrf
+                @method('PATCH')
 
-        <button type="submit" class="btn btn-dark"
-            onclick="return confirm('Are you sure you want to close this ticket?');">
-            Close Ticket
-        </button>
-    </form>
-    @endif
+                <button type="submit" class="btn btn-success">
+                    Resolve
+                </button>
+            </form>
 
-    @if($ticket->status?->is_closed)
-    <form method="POST" action="{{ route('tickets.reopen', $ticket) }}">
-        @csrf
-        @method('PATCH')
+            <form method="POST" action="{{ route('tickets.close', $ticket) }}">
+                @csrf
+                @method('PATCH')
 
-        <button type="submit" class="btn btn-outline-warning"
-            onclick="return confirm('Are you sure you want to reopen this ticket?');">
-            Reopen Ticket
-        </button>
-    </form>
-    @endif
+                <button type="submit" class="btn btn-outline-dark">
+                    Close
+                </button>
+            </form>
+            @else
+            <form method="POST" action="{{ route('tickets.reopen', $ticket) }}">
+                @csrf
+                @method('PATCH')
+
+                <button type="submit" class="btn btn-warning">
+                    Reopen
+                </button>
+            </form>
+            @endif
+        </div>
+    </div>
 </div>
 @endif
 
@@ -96,8 +125,16 @@
             <div class="card-body">
                 <h2 class="h5 mb-3">{{ $ticket->title }}</h2>
 
-                <div class="mb-4">
-                    {!! nl2br(e($ticket->description)) !!}
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        Description
+                    </div>
+
+                    <div class="card-body">
+                        <div class="ticket-description">
+                            {!! nl2br(e($ticket->description)) !!}
+                        </div>
+                    </div>
                 </div>
 
                 <div class="text-muted small">
@@ -237,60 +274,77 @@
     </div>
 
     <div class="col-lg-4">
-        <div class="card border-0 shadow-sm">
+        <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white">
-                Information
+                Ticket Information
             </div>
 
             <div class="card-body">
-                <div class="mb-3">
-                    <div class="text-muted small">Status</div>
-                    <span class="badge bg-{{ $ticket->status?->color ?? 'secondary' }}">
-                        {{ $ticket->status?->name ?? '-' }}
-                    </span>
-                </div>
-
-                <div class="mb-3">
-                    <div class="text-muted small">Priority</div>
-                    <span class="badge bg-{{ $ticket->priority?->color ?? 'secondary' }}">
-                        {{ $ticket->priority?->name ?? '-' }}
-                    </span>
-                </div>
-
-                <div class="mb-3">
-                    <div class="text-muted small">Category</div>
-                    <div>{{ $ticket->category?->name ?? '-' }}</div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="text-muted small">Department</div>
-                    <div>{{ $ticket->department?->name ?? '-' }}</div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="text-muted small">Requester</div>
-                    <div>{{ $ticket->requester?->name ?? '-' }}</div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="text-muted small">Assignee</div>
-                    <div>{{ $ticket->assignee?->name ?? 'Unassigned' }}</div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="text-muted small">Due Date</div>
-
-                    @if($ticket->due_at)
-                    <div>
-                        {{ $ticket->due_at->format('Y-m-d H:i') }}
+                <div class="ticket-info-grid">
+                    <div class="ticket-info-item">
+                        <div class="ticket-info-label">Requester</div>
+                        <div class="ticket-info-value">{{ $ticket->requester?->name ?? '-' }}</div>
                     </div>
 
-                    <span class="badge bg-{{ $ticket->due_status_color }}">
-                        {{ $ticket->due_status_label }}
-                    </span>
-                    @else
-                    <div>-</div>
-                    @endif
+                    <div class="ticket-info-item">
+                        <div class="ticket-info-label">Assignee</div>
+                        <div class="ticket-info-value">
+                            @if($ticket->assignee)
+                            {{ $ticket->assignee->name }}
+                            @else
+                            <span class="badge bg-light text-dark border">Unassigned</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="ticket-info-item">
+                        <div class="ticket-info-label">Department</div>
+                        <div class="ticket-info-value">{{ $ticket->department?->name ?? '-' }}</div>
+                    </div>
+
+                    <div class="ticket-info-item">
+                        <div class="ticket-info-label">Category</div>
+                        <div class="ticket-info-value">{{ $ticket->category?->name ?? '-' }}</div>
+                    </div>
+
+                    <div class="ticket-info-item">
+                        <div class="ticket-info-label">Priority</div>
+                        <div class="ticket-info-value">
+                            <span class="badge bg-{{ $ticket->priority?->color ?? 'secondary' }}">
+                                {{ $ticket->priority?->name ?? '-' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="ticket-info-item">
+                        <div class="ticket-info-label">Status</div>
+                        <div class="ticket-info-value">
+                            <span class="badge bg-{{ $ticket->status?->color ?? 'secondary' }}">
+                                {{ $ticket->status?->name ?? '-' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="ticket-info-item">
+                        <div class="ticket-info-label">Due Date</div>
+                        <div class="ticket-info-value">
+                            @if($ticket->due_at)
+                            {{ $ticket->due_at->format('Y-m-d H:i') }}
+                            <span class="badge bg-{{ $ticket->due_status_color }} ms-1">
+                                {{ $ticket->due_status_label }}
+                            </span>
+                            @else
+                            <span class="text-muted">No due date</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="ticket-info-item">
+                        <div class="ticket-info-label">Created At</div>
+                        <div class="ticket-info-value">
+                            {{ $ticket->created_at?->format('Y-m-d H:i') }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
