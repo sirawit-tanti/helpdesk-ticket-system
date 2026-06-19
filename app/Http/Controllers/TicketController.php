@@ -690,4 +690,91 @@ class TicketController extends Controller
             pageDescription: 'Tickets that have not been assigned to any agent yet.'
         );
     }
+
+    public function bulkAction(Request $request, TicketActivityLogger $activityLogger): RedirectResponse
+    {
+        if (! $request->user()->canManageTickets()) {
+            abort(403, 'You are not allowed to manage tickets.');
+        }
+
+        $validated = $request->validate([
+            'ticket_ids' => ['required', 'array', 'min:1'],
+            'ticket_ids.*' => ['integer', 'exists:tickets,id'],
+            'action' => ['required', 'string', 'in:assign_to_me,close'],
+        ]);
+
+        $user = $request->user();
+
+        $tickets = Ticket::with(['assignee', 'status'])
+            ->whereIn('id', $validated['ticket_ids'])
+            ->get();
+
+        if ($tickets->isEmpty()) {
+            return redirect()
+                ->back()
+                ->with('error', 'No tickets selected.');
+        }
+
+        if ($validated['action'] === 'assign_to_me') {
+            foreach ($tickets as $ticket) {
+                $oldAssignee = $ticket->assignee?->name ?? 'Unassigned';
+
+                if ((int) $ticket->assignee_id === (int) $user->id) {
+                    continue;
+                }
+
+                $ticket->update([
+                    'assignee_id' => $user->id,
+                ]);
+
+                $activityLogger->logIfChanged(
+                    ticket: $ticket,
+                    userId: $user->id,
+                    field: 'assignee',
+                    oldValue: $oldAssignee,
+                    newValue: $user->name
+                );
+            }
+
+            return redirect()
+                ->back()
+                ->with('success', 'Selected tickets assigned to you successfully.');
+        }
+
+        if ($validated['action'] === 'close') {
+            $closedStatus = TicketStatus::where('name', 'Closed')->firstOrFail();
+
+            foreach ($tickets as $ticket) {
+                $oldStatus = $ticket->status?->name ?? '-';
+
+                if ((int) $ticket->ticket_status_id === (int) $closedStatus->id) {
+                    continue;
+                }
+
+                $ticket->update([
+                    'ticket_status_id' => $closedStatus->id,
+                    'resolved_at' => $ticket->resolved_at ?? now(),
+                    'closed_at' => now(),
+                ]);
+
+                $activityLogger->logIfChanged(
+                    ticket: $ticket,
+                    userId: $user->id,
+                    field: 'status',
+                    oldValue: $oldStatus,
+                    newValue: 'Closed'
+                );
+
+                $activityLogger->closed($ticket, $user->id);
+            }
+
+            return redirect()
+                ->back()
+                ->with('success', 'Selected tickets closed successfully.');
+        }
+
+        return redirect()
+            ->back()
+            ->with('error', 'Invalid bulk action.');
+    }
 }

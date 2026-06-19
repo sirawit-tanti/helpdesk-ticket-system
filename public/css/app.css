@@ -1565,3 +1565,13 @@ code {
     font-size: 0.76rem;
     font-weight: 650;
 }
+
+/* Bulk Actions */
+#bulkActionForm .form-select {
+    min-width: 190px;
+}
+
+.ticket-checkbox,
+#selectAllTickets {
+    cursor: pointer;
+}

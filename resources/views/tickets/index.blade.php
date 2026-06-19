@@ -130,129 +130,179 @@
 </div>
 @endif
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body">
-        @if($tickets->count())
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Ticket No.</th>
-                        <th>Title</th>
-                        <th>Requester</th>
-                        <th>Assignee</th>
-                        <th>Category</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Due Date</th>
-                        <th>Created</th>
-                        <th class="text-end">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($tickets as $ticket)
-                    <tr>
-                        <td class="fw-semibold">
-                            {{ $ticket->ticket_no }}
-                        </td>
+@if(auth()->user()->canManageTickets())
+<form method="POST" action="{{ route('tickets.bulk-action') }}" id="bulkActionForm">
+    @csrf
+    @method('PATCH')
 
-                        <td>
-                            {{ $ticket->title }}
-                        </td>
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <div class="fw-semibold">
+                        Bulk Actions
+                    </div>
 
-                        <td>
-                            {{ $ticket->requester?->name ?? '-' }}
-                        </td>
+                    <div class="text-muted small">
+                        Select tickets from the table below and apply an action.
+                    </div>
+                </div>
 
-                        <td>
-                            @if($ticket->assignee)
-                            {{ $ticket->assignee->name }}
-                            @else
-                            <span class="badge bg-light text-dark border">
-                                Unassigned
-                            </span>
-                            @endif
-                        </td>
+                <div class="d-flex gap-2">
+                    <select name="action" class="form-select" required>
+                        <option value="">Choose action</option>
+                        <option value="assign_to_me">Assign to Me</option>
+                        <option value="close">Close Tickets</option>
+                    </select>
 
-                        <td>
-                            {{ $ticket->category?->name ?? '-' }}
-                        </td>
-
-                        <td>
-                            <span class="badge bg-{{ $ticket->priority?->color ?? 'secondary' }}">
-                                {{ $ticket->priority?->name ?? '-' }}
-                            </span>
-                        </td>
-
-                        <td>
-                            <span class="badge bg-{{ $ticket->status?->color ?? 'secondary' }}">
-                                {{ $ticket->status?->name ?? '-' }}
-                            </span>
-                        </td>
-
-                        <td>
-                            @if($ticket->due_at)
-                            <div>
-                                {{ $ticket->due_at->format('Y-m-d H:i') }}
-                            </div>
-
-                            <span class="badge bg-{{ $ticket->due_status_color }}">
-                                {{ $ticket->due_status_label }}
-                            </span>
-                            @else
-                            <span class="text-muted">-</span>
-                            @endif
-                        </td>
-
-                        <td>
-                            {{ $ticket->created_at->format('Y-m-d H:i') }}
-                        </td>
-
-                        <td class="text-end">
-                            <div class="d-flex justify-content-end gap-1">
-                                <a href="{{ route('tickets.show', $ticket) }}" class="btn btn-sm btn-outline-primary">
-                                    View
-                                </a>
-
-                                @if(auth()->user()->canManageTickets())
-                                <a href="{{ route('tickets.edit', $ticket) }}" class="btn btn-sm btn-outline-secondary">
-                                    Edit
-                                </a>
-                                @endif
-
-                                @if(auth()->user()->canManageTickets() && (int) $ticket->assignee_id !== (int)
-                                auth()->id())
-                                <form method="POST" action="{{ route('tickets.assign-to-me', $ticket) }}"
-                                    class="d-inline">
-                                    @csrf
-                                    @method('PATCH')
-
-                                    <button type="submit" class="btn btn-sm btn-outline-success">
-                                        Assign
-                                    </button>
-                                </form>
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    <button type="submit" class="btn btn-primary">
+                        Apply
+                    </button>
+                </div>
+            </div>
         </div>
-
-        {{ $tickets->links() }}
-        @else
-        <div class="text-center py-5">
-            <h2 class="h5">No tickets found</h2>
-            <p class="text-muted mb-3">
-                Create your first support ticket to get started.
-            </p>
-
-            <a href="{{ route('tickets.create') }}" class="btn btn-primary">
-                Create Ticket
-            </a>
-        </div>
-        @endif
     </div>
-</div>
+    @endif
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            @if($tickets->count())
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            @if(auth()->user()->canManageTickets())
+                            <th style="width: 40px;">
+                                <input type="checkbox" class="form-check-input" id="selectAllTickets">
+                            </th>
+                            @endif
+                            <th>Ticket No.</th>
+                            <th>Title</th>
+                            <th>Requester</th>
+                            <th>Assignee</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Created</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($tickets as $ticket)
+                        <tr>
+                            @if(auth()->user()->canManageTickets())
+                            <td>
+                                <input type="checkbox" name="ticket_ids[]" value="{{ $ticket->id }}"
+                                    class="form-check-input ticket-checkbox">
+                            </td>
+                            @endif
+                            <td class="fw-semibold">
+                                {{ $ticket->ticket_no }}
+                            </td>
+
+                            <td>
+                                {{ $ticket->title }}
+                            </td>
+
+                            <td>
+                                {{ $ticket->requester?->name ?? '-' }}
+                            </td>
+
+                            <td>
+                                @if($ticket->assignee)
+                                {{ $ticket->assignee->name }}
+                                @else
+                                <span class="badge bg-light text-dark border">
+                                    Unassigned
+                                </span>
+                                @endif
+                            </td>
+
+                            <td>
+                                {{ $ticket->category?->name ?? '-' }}
+                            </td>
+
+                            <td>
+                                <span class="badge bg-{{ $ticket->priority?->color ?? 'secondary' }}">
+                                    {{ $ticket->priority?->name ?? '-' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-{{ $ticket->status?->color ?? 'secondary' }}">
+                                    {{ $ticket->status?->name ?? '-' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                @if($ticket->due_at)
+                                <div>
+                                    {{ $ticket->due_at->format('Y-m-d H:i') }}
+                                </div>
+
+                                <span class="badge bg-{{ $ticket->due_status_color }}">
+                                    {{ $ticket->due_status_label }}
+                                </span>
+                                @else
+                                <span class="text-muted">-</span>
+                                @endif
+                            </td>
+
+                            <td>
+                                {{ $ticket->created_at->format('Y-m-d H:i') }}
+                            </td>
+
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-1">
+                                    <a href="{{ route('tickets.show', $ticket) }}"
+                                        class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+
+                                    @if(auth()->user()->canManageTickets())
+                                    <a href="{{ route('tickets.edit', $ticket) }}"
+                                        class="btn btn-sm btn-outline-secondary">
+                                        Edit
+                                    </a>
+                                    @endif
+
+                                    @if(auth()->user()->canManageTickets() && (int) $ticket->assignee_id !== (int)
+                                    auth()->id())
+                                    <form method="POST" action="{{ route('tickets.assign-to-me', $ticket) }}"
+                                        class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            Assign
+                                        </button>
+                                    </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            {{ $tickets->links() }}
+            @else
+            <div class="text-center py-5">
+                <h2 class="h5">No tickets found</h2>
+                <p class="text-muted mb-3">
+                    Create your first support ticket to get started.
+                </p>
+
+                <a href="{{ route('tickets.create') }}" class="btn btn-primary">
+                    Create Ticket
+                </a>
+            </div>
+            @endif
+        </div>
+    </div>
+    @if(auth()->user()->canManageTickets())
+</form>
+@endif
 @endsection

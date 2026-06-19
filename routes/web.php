@@ -32,15 +32,16 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    Route::get('/tickets/my', [TicketController::class, 'myTickets'])->name('tickets.my');
+    Route::get('/tickets/assigned-to-me', [TicketController::class, 'assignedToMe'])->name('tickets.assigned-to-me');
+    Route::get('/tickets/unassigned', [TicketController::class, 'unassigned'])->name('tickets.unassigned');
+    Route::patch('/tickets/bulk-action', [TicketController::class, 'bulkAction'])->name('tickets.bulk-action');
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('tickets.comments.store');
     Route::patch('/tickets/{ticket}/resolve', [TicketController::class, 'resolve'])->name('tickets.resolve');
     Route::patch('/tickets/{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
     Route::patch('/tickets/{ticket}/reopen', [TicketController::class, 'reopen'])->name('tickets.reopen');
     Route::patch('/tickets/{ticket}/assign-to-me', [TicketController::class, 'assignToMe'])->name('tickets.assign-to-me');
     Route::patch('/tickets/{ticket}/unassign', [TicketController::class, 'unassign'])->name('tickets.unassign');
-    Route::get('/tickets/my', [TicketController::class, 'myTickets'])->name('tickets.my');
-    Route::get('/tickets/assigned-to-me', [TicketController::class, 'assignedToMe'])->name('tickets.assigned-to-me');
-    Route::get('/tickets/unassigned', [TicketController::class, 'unassigned'])->name('tickets.unassigned');
     Route::resource('tickets', TicketController::class);
 
     Route::prefix('admin')

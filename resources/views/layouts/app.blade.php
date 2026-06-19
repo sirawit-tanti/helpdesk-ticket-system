@@ -124,6 +124,34 @@
             button.textContent = isPassword ? 'Hide' : 'Show';
         });
     });
+
+    const selectAllTickets = document.getElementById('selectAllTickets');
+
+    if (selectAllTickets) {
+        selectAllTickets.addEventListener('change', function() {
+            document.querySelectorAll('.ticket-checkbox').forEach(function(checkbox) {
+                checkbox.checked = selectAllTickets.checked;
+            });
+        });
+    }
+
+    const bulkActionForm = document.getElementById('bulkActionForm');
+
+    if (bulkActionForm) {
+        bulkActionForm.addEventListener('submit', function(event) {
+            const checkedTickets = document.querySelectorAll('.ticket-checkbox:checked');
+
+            if (checkedTickets.length === 0) {
+                event.preventDefault();
+                alert('Please select at least one ticket.');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to apply this bulk action?')) {
+                event.preventDefault();
+            }
+        });
+    }
     </script>
 </body>
 
