@@ -146,6 +146,85 @@
         toast.show();
     });
 
+    function showAppToast(message, type = 'success') {
+        const toastContainer = document.querySelector('.app-toast-container');
+
+        if (!toastContainer) {
+            alert(message);
+            return;
+        }
+
+        const toastElement = document.createElement('div');
+        const isSuccess = type === 'success';
+
+        toastElement.className = `toast app-toast ${isSuccess ? 'app-toast-success' : 'app-toast-error'}`;
+        toastElement.setAttribute('role', 'alert');
+        toastElement.setAttribute('aria-live', 'assertive');
+        toastElement.setAttribute('aria-atomic', 'true');
+        toastElement.setAttribute('data-bs-delay', isSuccess ? '2500' : '4000');
+
+        toastElement.innerHTML = `
+        <div class="toast-header">
+            <span class="app-toast-icon">
+                <i class="bi ${isSuccess ? 'bi-check-lg' : 'bi-exclamation-triangle'}"></i>
+            </span>
+
+            <strong class="me-auto">${isSuccess ? 'Success' : 'Error'}</strong>
+
+            <small>Now</small>
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+            ></button>
+        </div>
+
+        <div class="toast-body">
+            ${message}
+        </div>
+    `;
+
+        toastContainer.appendChild(toastElement);
+
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+
+        toastElement.addEventListener('hidden.bs.toast', function() {
+            toastElement.remove();
+        });
+    }
+
+    document.querySelectorAll('[data-copy-text]').forEach(function(button) {
+        button.addEventListener('click', async function() {
+            const text = button.getAttribute('data-copy-text');
+            const label = button.getAttribute('data-copy-label') || 'Copied';
+
+            if (!text) {
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(text);
+
+                const originalHtml = button.innerHTML;
+
+                button.innerHTML = '<i class="bi bi-check-lg me-1"></i>Copied';
+                button.disabled = true;
+
+                setTimeout(function() {
+                    button.innerHTML = originalHtml;
+                    button.disabled = false;
+                }, 1400);
+
+                showAppToast(label, 'success');
+            } catch (error) {
+                showAppToast('Unable to copy text', 'error');
+            }
+        });
+    });
+
     document.querySelectorAll('[data-password-toggle]').forEach(function(button) {
         button.addEventListener('click', function() {
             const inputId = button.getAttribute('data-password-toggle');

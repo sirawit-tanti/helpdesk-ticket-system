@@ -9,6 +9,12 @@
             <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
                 <span class="badge bg-light text-dark border">
                     {{ $ticket->ticket_no }}
+
+                    <button type="button" class="btn btn-sm btn-link p-0 ms-1 ticket-copy-btn"
+                        data-copy-text="{{ $ticket->ticket_no }}" data-copy-label="Ticket number copied"
+                        title="Copy ticket number">
+                        <i class="bi bi-copy"></i>
+                    </button>
                 </span>
 
                 <span class="badge bg-{{ $ticket->status?->color ?? 'secondary' }}">
@@ -39,6 +45,12 @@
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
+            <button type="button" class="btn btn-outline-secondary"
+                data-copy-text="{{ route('tickets.show', $ticket) }}" data-copy-label="Ticket link copied">
+                <i class="bi bi-link-45deg me-1"></i>
+                Copy Link
+            </button>
+
             <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary">
                 Back
             </a>

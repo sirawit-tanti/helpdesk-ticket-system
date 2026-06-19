@@ -1651,3 +1651,26 @@ tr:has(.ticket-checkbox:disabled) {
         min-width: 0;
     }
 }
+
+/* Copy Buttons */
+.ticket-copy-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.ticket-copy-btn {
+    color: #64748b;
+    font-size: 0.75rem;
+    text-decoration: none;
+}
+
+.ticket-copy-btn:hover,
+.ticket-copy-btn:focus {
+    color: var(--app-primary);
+}
+
+[data-copy-text]:disabled {
+    pointer-events: none;
+    opacity: 0.75;
+}
