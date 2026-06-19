@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
@@ -204,5 +205,118 @@ class ReportController extends Controller
         }, $fileName, [
             'Content-Type' => 'text/csv',
         ]);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        if (! $request->user()->canManageTickets()) {
+            abort(403, 'You are not allowed to export reports.');
+        }
+
+        $validated = $request->validate([
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+        ]);
+
+        $dateFrom = $validated['date_from'] ?? null;
+        $dateTo = $validated['date_to'] ?? null;
+
+        $baseQuery = Ticket::query();
+
+        if ($request->user()->isAgent()) {
+            $baseQuery->where(function ($query) use ($request) {
+                $query->where('assignee_id', $request->user()->id)
+                    ->orWhereNull('assignee_id');
+            });
+        }
+
+        if ($dateFrom) {
+            $baseQuery->whereDate('tickets.created_at', '>=', $dateFrom);
+        }
+
+        if ($dateTo) {
+            $baseQuery->whereDate('tickets.created_at', '<=', $dateTo);
+        }
+
+        $totalTickets = (clone $baseQuery)->count();
+
+        $overdueTickets = (clone $baseQuery)
+            ->whereNotNull('due_at')
+            ->where('due_at', '<', now())
+            ->whereHas('status', function ($query) {
+                $query->where('is_closed', false);
+            })
+            ->count();
+
+        $closedTickets = (clone $baseQuery)
+            ->whereHas('status', function ($query) {
+                $query->where('is_closed', true);
+            })
+            ->count();
+
+        $openTickets = $totalTickets - $closedTickets;
+
+        $statusReports = (clone $baseQuery)
+            ->join('ticket_statuses', 'tickets.ticket_status_id', '=', 'ticket_statuses.id')
+            ->select(
+                'ticket_statuses.name',
+                'ticket_statuses.color',
+                DB::raw('COUNT(*) as total')
+            )
+            ->groupBy('ticket_statuses.name', 'ticket_statuses.color')
+            ->orderBy('ticket_statuses.name')
+            ->get();
+
+        $priorityReports = (clone $baseQuery)
+            ->join('ticket_priorities', 'tickets.ticket_priority_id', '=', 'ticket_priorities.id')
+            ->select(
+                'ticket_priorities.name',
+                'ticket_priorities.color',
+                'ticket_priorities.level',
+                DB::raw('COUNT(*) as total')
+            )
+            ->groupBy('ticket_priorities.name', 'ticket_priorities.color', 'ticket_priorities.level')
+            ->orderBy('ticket_priorities.level')
+            ->get();
+
+        $categoryReports = (clone $baseQuery)
+            ->join('ticket_categories', 'tickets.ticket_category_id', '=', 'ticket_categories.id')
+            ->select(
+                'ticket_categories.name',
+                DB::raw('COUNT(*) as total')
+            )
+            ->groupBy('ticket_categories.name')
+            ->orderByDesc('total')
+            ->get();
+
+        $tickets = (clone $baseQuery)
+            ->with([
+                'requester',
+                'assignee',
+                'department',
+                'category',
+                'priority',
+                'status',
+            ])
+            ->latest('tickets.created_at')
+            ->limit(100)
+            ->get();
+
+        $pdf = Pdf::loadView('reports.pdf', compact(
+            'totalTickets',
+            'openTickets',
+            'closedTickets',
+            'overdueTickets',
+            'statusReports',
+            'priorityReports',
+            'categoryReports',
+            'tickets',
+            'dateFrom',
+            'dateTo'
+        ))->setPaper('a4', 'portrait');
+
+        $fileName = 'ticket-report-' . now()->format('Ymd-His') . '.pdf';
+
+        return $pdf->download($fileName);
     }
 }

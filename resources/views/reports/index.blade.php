@@ -16,6 +16,10 @@
             Export CSV
         </a>
 
+        <a href="{{ route('reports.export-pdf', request()->only(['date_from', 'date_to'])) }}" class="btn btn-primary">
+            Export PDF
+        </a>
+
         <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary">
             Back to Tickets
         </a>
