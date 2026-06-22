@@ -191,6 +191,22 @@ class DemoDataSeeder extends Seeder
                 'created_at' => now()->subDays(6),
                 'updated_at' => now()->subHours(12),
             ],
+            [
+                'ticket_no' => 'TCK-20260618-0006',
+                'requester_id' => $requesterTwo->id,
+                'assignee_id' => null,
+                'department_id' => $itDepartment->id,
+                'ticket_category_id' => $networkCategory->id,
+                'ticket_priority_id' => $criticalPriority->id,
+                'ticket_status_id' => $openStatus->id,
+                'title' => 'Office internet outage on 3rd floor',
+                'description' => 'Users on the 3rd floor cannot access the internet. Wired and Wi-Fi connections are both affected.',
+                'due_at' => now()->subHours(2),
+                'resolved_at' => null,
+                'closed_at' => null,
+                'created_at' => now()->subHours(6),
+                'updated_at' => now()->subHours(6),
+            ],
         ];
 
         foreach ($tickets as $ticketData) {
