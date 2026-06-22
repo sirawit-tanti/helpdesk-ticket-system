@@ -33,14 +33,20 @@ class TicketAttachment extends Model
 
     public function getFormattedFileSizeAttribute(): string
     {
-        if ($this->file_size >= 1024 * 1024) {
-            return round($this->file_size / 1024 / 1024, 2) . ' MB';
+        if ($this->file_size === null) {
+            return '-';
         }
 
-        if ($this->file_size >= 1024) {
-            return round($this->file_size / 1024, 2) . ' KB';
+        $bytes = (int) $this->file_size;
+
+        if ($bytes >= 1048576) {
+            return number_format($bytes / 1048576, 2) . ' MB';
         }
 
-        return $this->file_size . ' B';
+        if ($bytes >= 1024) {
+            return number_format($bytes / 1024, 2) . ' KB';
+        }
+
+        return $bytes . ' B';
     }
 }
