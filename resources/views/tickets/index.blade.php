@@ -31,6 +31,7 @@ $searchTerm = request('search');
     </div>
 
     <div class="d-flex flex-wrap gap-2">
+        @if(auth()->user()->canManageTickets())
         <a href="{{ route('tickets.index') }}"
             class="btn {{ request()->routeIs('tickets.index') ? 'btn-primary' : 'btn-outline-secondary' }}">
             All Tickets
@@ -41,7 +42,6 @@ $searchTerm = request('search');
             My Tickets
         </a>
 
-        @if(auth()->user()->canManageTickets())
         <a href="{{ route('tickets.assigned-to-me') }}"
             class="btn {{ request()->routeIs('tickets.assigned-to-me') ? 'btn-primary' : 'btn-outline-secondary' }}">
             Assigned to Me
@@ -50,6 +50,11 @@ $searchTerm = request('search');
         <a href="{{ route('tickets.unassigned') }}"
             class="btn {{ request()->routeIs('tickets.unassigned') ? 'btn-primary' : 'btn-outline-secondary' }}">
             Unassigned Queue
+        </a>
+        @else
+        <a href="{{ route('tickets.my') }}"
+            class="btn {{ request()->routeIs('tickets.my') ? 'btn-primary' : 'btn-outline-secondary' }}">
+            My Tickets
         </a>
         @endif
 

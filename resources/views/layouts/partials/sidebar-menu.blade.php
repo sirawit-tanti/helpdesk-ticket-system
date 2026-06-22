@@ -34,6 +34,8 @@ $isAdminMenuOpen = request()->routeIs('admin.*');
     </button>
 
     <div class="collapse {{ $isTicketMenuOpen ? 'show' : '' }}" id="{{ $ticketSubmenuId }}">
+
+        @if(auth()->user()->canManageTickets())
         <a href="{{ route('tickets.index') }}"
             class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('tickets.index') ? 'active' : '' }}">
             <i class="bi bi-list-ul me-2"></i>
@@ -46,7 +48,6 @@ $isAdminMenuOpen = request()->routeIs('admin.*');
             My Tickets
         </a>
 
-        @if(auth()->user()->canManageTickets())
         <a href="{{ route('tickets.assigned-to-me') }}"
             class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('tickets.assigned-to-me') ? 'active' : '' }}">
             <i class="bi bi-person-check me-2"></i>
@@ -57,6 +58,12 @@ $isAdminMenuOpen = request()->routeIs('admin.*');
             class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('tickets.unassigned') ? 'active' : '' }}">
             <i class="bi bi-inbox me-2"></i>
             Unassigned Queue
+        </a>
+        @else
+        <a href="{{ route('tickets.my') }}"
+            class="list-group-item list-group-item-action sidebar-submenu-item {{ request()->routeIs('tickets.my') ? 'active' : '' }}">
+            <i class="bi bi-person-lines-fill me-2"></i>
+            My Tickets
         </a>
         @endif
     </div>

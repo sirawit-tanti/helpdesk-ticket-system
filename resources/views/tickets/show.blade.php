@@ -153,6 +153,30 @@
                 </button>
             </form>
             @endif
+            <form method="POST" action="{{ route('tickets.assign', $ticket) }}" class="ticket-assign-form">
+                @csrf
+                @method('PATCH')
+
+                <div class="input-group">
+                    <select name="assignee_id" class="form-select" required>
+                        <option value="">Assign to...</option>
+
+                        @foreach($agents as $agent)
+                        <option value="{{ $agent->id }}" @selected((int) $ticket->assignee_id === (int) $agent->id)>
+                            {{ $agent->name }}
+                        </option>
+                        @endforeach
+                    </select>
+
+                    <button type="button" class="btn btn-outline-primary" data-confirm-action
+                        data-confirm-title="Assign Ticket"
+                        data-confirm-message="Are you sure you want to assign this ticket to the selected user?"
+                        data-confirm-button="Yes, Assign" data-confirm-class="btn-primary">
+                        <i class="bi bi-person-plus me-1"></i>
+                        Assign
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

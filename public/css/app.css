@@ -2547,3 +2547,36 @@ tr:has(.ticket-checkbox:disabled) {
         white-space: nowrap;
     }
 }
+
+.ticket-assign-form {
+    min-width: 320px;
+}
+
+.ticket-assign-form .form-select {
+    border-radius: 12px 0 0 12px;
+}
+
+.ticket-assign-form .btn {
+    border-radius: 0 12px 12px 0;
+}
+
+@media (max-width: 575.98px) {
+    .ticket-assign-form {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .ticket-assign-form .input-group {
+        flex-direction: column;
+    }
+
+    .ticket-assign-form .form-select,
+    .ticket-assign-form .btn {
+        width: 100%;
+        border-radius: 12px !important;
+    }
+
+    .ticket-assign-form .btn {
+        margin-top: 0.5rem;
+    }
+}

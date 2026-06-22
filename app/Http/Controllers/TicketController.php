@@ -147,7 +147,17 @@ class TicketController extends Controller
             }
         ]);
 
-        return view('tickets.show', compact('ticket'));
+        $agents = collect();
+
+        if ($request->user()->canManageTickets()) {
+            $agents = User::whereHas('role', function ($query) {
+               $query->whereIn('name', ['admin', 'agent']); 
+            })
+            ->orderBy('name')
+            ->get();
+        }
+
+        return view('tickets.show', compact('ticket', 'agents'));
     }
 
     /**
@@ -924,5 +934,52 @@ class TicketController extends Controller
         return redirect()
             ->back()
             ->with('error', 'Invalid bulk action.');
+    }
+
+    public function assign(Request $request, Ticket $ticket, TicketActivityLogger $activityLogger): RedirectResponse
+    {
+        $this->authorizeManage($request, $ticket);
+
+        $validated = $request->validate([
+            'assignee_id' => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        $assignee = User::whereKey($validated['assignee_id'])
+            ->whereHas('role', function ($query) {
+                $query->whereIn('name', ['admin', 'agent']);
+            })
+            ->first();
+
+        if (! $assignee) {
+            return redirect()
+                ->route('tickets.show', $ticket)
+                ->with('error', 'Selected assignee is not available.');
+        }
+
+        $ticket->load('assignee');
+
+        $oldAssignee = $ticket->assignee?->name ?? 'Unassigned';
+
+        if ((int) $ticket->assignee_id === (int) $assignee->id) {
+            return redirect()
+                ->route('tickets.show', $ticket)
+                ->with('error', 'This ticket is already assigned to this user.');
+        }
+
+        $ticket->update([
+            'assignee_id' => $assignee->id,
+        ]);
+
+        $activityLogger->logIfChanged(
+            ticket: $ticket,
+            userId: $request->user()->id,
+            field: 'assignee',
+            oldValue: $oldAssignee,
+            newValue: $assignee->name
+        );
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Ticket assigned successfully.');
     }
 }
