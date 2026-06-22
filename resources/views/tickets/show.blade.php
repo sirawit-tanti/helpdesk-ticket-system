@@ -273,16 +273,13 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm mb-4 no-print">
-            <div class="card-header bg-white">
-                Add Comment
-            </div>
 
-            <div class="card-body">
-                <form method="POST" action="{{ route('tickets.comments.store', $ticket) }}"
-                    enctype="multipart/form-data" data-loading-form>
-                    @csrf
+        <form method="POST" action="{{ route('tickets.comments.store', $ticket) }}" enctype="multipart/form-data"
+            data-loading-form>
+            @csrf
 
+            <div class="card border-0 shadow-sm mt-4 no-print">
+                <div class="card-body p-0">
                     <div class="comment-composer">
                         <div class="comment-composer-header">
                             <div>
@@ -314,93 +311,64 @@
                         </div>
                         @endif
 
-                        <textarea name="comment" rows="4"
-                            class="form-control comment-composer-input @error('comment') is-invalid @enderror"
+                        <textarea name="message" rows="4"
+                            class="form-control comment-composer-input @error('message') is-invalid @enderror"
                             placeholder="Write your reply..." data-comment-input
-                            required>{{ old('comment') }}</textarea>
+                            required>{{ old('message') }}</textarea>
 
-                        @error('comment')
+                        @error('message')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
                         @enderror
 
-                        <div class="card border-0 shadow-sm mt-4">
-                            <div class="card-header bg-white border-0 pb-0">
-                                <div class="d-flex align-items-center justify-content-between gap-2">
-                                    <div>
-                                        <h5 class="mb-1">
-                                            <i class="bi bi-paperclip me-1"></i>
-                                            Attachments
-                                        </h5>
-
-                                        <div class="text-muted small">
-                                            Files uploaded to this ticket.
-                                        </div>
+                        <div class="comment-attach-box mt-4">
+                            <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                                <div>
+                                    <div class="comment-attach-title">
+                                        <i class="bi bi-paperclip me-1"></i>
+                                        Attach files
                                     </div>
 
-                                    <span class="badge bg-light text-dark border">
-                                        {{ $ticket->attachments->count() }} file(s)
-                                    </span>
+                                    <div class="comment-attach-text">
+                                        Optional screenshots or related documents for this reply.
+                                    </div>
                                 </div>
+
+                                <span class="badge bg-light text-dark border" id="selectedFileCount">
+                                    0 file(s)
+                                </span>
                             </div>
 
-                            <div class="card-body">
-                                @if($ticket->attachments->count())
-                                <div class="attachment-list">
-                                    @foreach($ticket->attachments as $attachment)
-                                    <div class="attachment-item">
-                                        <div class="attachment-icon">
-                                            <i class="bi bi-file-earmark-text"></i>
-                                        </div>
-
-                                        <div class="attachment-content">
-                                            <div class="attachment-name">
-                                                {{ $attachment->original_name }}
-                                            </div>
-
-                                            <div class="attachment-meta">
-                                                {{ $attachment->formatted_file_size }}
-                                                <span class="mx-1">•</span>
-                                                Uploaded by {{ $attachment->uploader?->name ?? 'Unknown' }}
-                                                <span class="mx-1">•</span>
-                                                {{ $attachment->created_at?->format('Y-m-d H:i') }}
-                                            </div>
-                                        </div>
-
-                                        <div class="attachment-actions">
-                                            <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
-                                                class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-box-arrow-up-right me-1"></i>
-                                                Open
-                                            </a>
-
-                                            <a href="{{ asset('storage/' . $attachment->file_path) }}"
-                                                download="{{ $attachment->original_name }}"
-                                                class="btn btn-sm btn-outline-secondary">
-                                                <i class="bi bi-download me-1"></i>
-                                                Download
-                                            </a>
-                                        </div>
-                                    </div>
-                                    @endforeach
+                            <div class="comment-file-dropzone">
+                                <div class="comment-file-icon">
+                                    <i class="bi bi-cloud-arrow-up"></i>
                                 </div>
-                                @else
-                                <div class="attachment-empty-state">
-                                    <div class="attachment-empty-icon">
-                                        <i class="bi bi-paperclip"></i>
-                                    </div>
 
-                                    <div class="fw-bold">
-                                        No attachments yet
-                                    </div>
-
-                                    <div class="text-muted small">
-                                        Attach files when adding a reply or internal note.
-                                    </div>
+                                <div class="comment-file-title" id="selectedFileTitle">
+                                    No files selected
                                 </div>
-                                @endif
+
+                                <div class="comment-file-text">
+                                    Choose files to attach with your reply.
+                                </div>
+
+                                <label for="attachments" class="btn btn-sm btn-outline-primary mt-3">
+                                    <i class="bi bi-folder2-open me-1"></i>
+                                    Choose Files
+                                </label>
+
+                                <input type="file" name="attachments[]" id="attachments"
+                                    class="visually-hidden @error('attachments.*') is-invalid @enderror" multiple>
                             </div>
+
+                            <div class="selected-file-list d-none" id="selectedFileList"></div>
+
+                            @error('attachments.*')
+                            <div class="invalid-feedback d-block mt-2">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
 
                         <div class="comment-composer-footer">
@@ -414,9 +382,9 @@
                             </button>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <div class="col-lg-4">

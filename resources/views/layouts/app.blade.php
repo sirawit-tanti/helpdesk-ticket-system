@@ -502,6 +502,110 @@
             commentTypeToggle.addEventListener('change', updateCommentType);
             updateCommentType();
         }
+
+        const fileInput = document.getElementById('attachments');
+        const selectedFileCount = document.getElementById('selectedFileCount');
+        const selectedFileTitle = document.getElementById('selectedFileTitle');
+        const selectedFileList = document.getElementById('selectedFileList');
+
+        if (fileInput && selectedFileCount && selectedFileTitle && selectedFileList) {
+            const selectedFilesStore = new DataTransfer();
+
+            const formatFileSize = function(bytes) {
+                const sizeKb = bytes / 1024;
+
+                if (sizeKb >= 1024) {
+                    return `${(sizeKb / 1024).toFixed(2)} MB`;
+                }
+
+                return `${sizeKb.toFixed(2)} KB`;
+            };
+
+            const renderSelectedFiles = function() {
+                const files = Array.from(selectedFilesStore.files);
+
+                selectedFileCount.textContent = `${files.length} file(s)`;
+
+                if (files.length === 0) {
+                    selectedFileTitle.textContent = 'No files selected';
+                    selectedFileList.classList.add('d-none');
+                    selectedFileList.innerHTML = '';
+                    fileInput.files = selectedFilesStore.files;
+                    return;
+                }
+
+                selectedFileTitle.textContent = files.length === 1 ?
+                    files[0].name :
+                    `${files.length} files selected`;
+
+                selectedFileList.classList.remove('d-none');
+
+                selectedFileList.innerHTML = files.map(function(file, index) {
+                    return `
+                <div class="selected-file-item">
+                    <div class="selected-file-icon">
+                        <i class="bi bi-file-earmark"></i>
+                    </div>
+
+                    <div class="selected-file-content">
+                        <div class="selected-file-name">${file.name}</div>
+                        <div class="selected-file-size">${formatFileSize(file.size)}</div>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger selected-file-remove"
+                        data-remove-file-index="${index}"
+                    >
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            `;
+                }).join('');
+
+                fileInput.files = selectedFilesStore.files;
+            };
+
+            fileInput.addEventListener('change', function() {
+                const newFiles = Array.from(fileInput.files || []);
+
+                newFiles.forEach(function(newFile) {
+                    const isDuplicate = Array.from(selectedFilesStore.files).some(function(
+                        existingFile) {
+                        return existingFile.name === newFile.name &&
+                            existingFile.size === newFile.size &&
+                            existingFile.lastModified === newFile.lastModified;
+                    });
+
+                    if (!isDuplicate) {
+                        selectedFilesStore.items.add(newFile);
+                    }
+                });
+
+                renderSelectedFiles();
+            });
+
+            selectedFileList.addEventListener('click', function(event) {
+                const removeButton = event.target.closest('[data-remove-file-index]');
+
+                if (!removeButton) {
+                    return;
+                }
+
+                const removeIndex = Number(removeButton.dataset.removeFileIndex);
+                const files = Array.from(selectedFilesStore.files);
+
+                selectedFilesStore.items.clear();
+
+                files.forEach(function(file, index) {
+                    if (index !== removeIndex) {
+                        selectedFilesStore.items.add(file);
+                    }
+                });
+
+                renderSelectedFiles();
+            });
+        }
     });
     </script>
 </body>

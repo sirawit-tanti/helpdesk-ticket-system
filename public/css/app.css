@@ -2262,7 +2262,7 @@ tr:has(.ticket-checkbox:disabled) {
 /* Comment Composer */
 .comment-composer {
     padding: 1rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #dbe3ef;
     border-radius: 20px;
     background:
         radial-gradient(
@@ -2271,6 +2271,11 @@ tr:has(.ticket-checkbox:disabled) {
             transparent 28%
         ),
         #ffffff;
+}
+
+.card > .card-body.p-0 > .comment-composer {
+    border: 0;
+    border-radius: 20px;
 }
 
 .comment-composer-header {
@@ -2321,8 +2326,135 @@ tr:has(.ticket-checkbox:disabled) {
 
 .comment-composer-input {
     resize: vertical;
-    min-height: 110px;
+    min-height: 108px;
     border-radius: 16px;
+}
+
+/* Comment Attach Files */
+.comment-attach-box {
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: #ffffff;
+}
+
+.comment-attach-title {
+    color: #0f172a;
+    font-size: 0.94rem;
+    font-weight: 900;
+}
+
+.comment-attach-text {
+    margin-top: 0.2rem;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 650;
+}
+
+.comment-file-dropzone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 150px;
+    padding: 1.25rem;
+    border: 1px dashed #bfdbfe;
+    border-radius: 18px;
+    color: #475569;
+    background: #f8fafc;
+    text-align: center;
+    cursor: pointer;
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.comment-file-dropzone:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 14px 34px rgba(37, 99, 235, 0.09);
+}
+
+.comment-file-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 0.75rem;
+    border-radius: 16px;
+    color: #2563eb;
+    background: #dbeafe;
+    font-size: 1.25rem;
+}
+
+.comment-file-title {
+    color: #0f172a;
+    font-size: 0.92rem;
+    font-weight: 900;
+}
+
+.comment-file-text {
+    margin-top: 0.25rem;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 650;
+}
+
+.selected-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.selected-file-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.selected-file-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    color: #2563eb;
+    background: #dbeafe;
+    flex-shrink: 0;
+}
+
+.selected-file-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.selected-file-name {
+    color: #0f172a;
+    font-size: 0.84rem;
+    font-weight: 800;
+    word-break: break-word;
+}
+
+.selected-file-size {
+    color: #64748b;
+    font-size: 0.76rem;
+    font-weight: 650;
+}
+
+.selected-file-remove {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 10px;
 }
 
 .comment-composer-footer {
@@ -2353,107 +2485,8 @@ tr:has(.ticket-checkbox:disabled) {
     .comment-composer-footer .btn {
         width: 100%;
     }
-}
 
-/* Ticket Attachments */
-.attachment-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.attachment-item {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 0.9rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    background: #ffffff;
-    transition:
-        border-color 0.18s ease,
-        box-shadow 0.18s ease,
-        transform 0.18s ease;
-}
-
-.attachment-item:hover {
-    border-color: #bfdbfe;
-    box-shadow: 0 14px 34px rgba(37, 99, 235, 0.1);
-    transform: translateY(-1px);
-}
-
-.attachment-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
-    color: #2563eb;
-    background: #dbeafe;
-    font-size: 1.15rem;
-    flex-shrink: 0;
-}
-
-.attachment-content {
-    min-width: 0;
-    flex: 1;
-}
-
-.attachment-name {
-    color: #0f172a;
-    font-size: 0.92rem;
-    font-weight: 850;
-    word-break: break-word;
-}
-
-.attachment-meta {
-    margin-top: 0.15rem;
-    color: #64748b;
-    font-size: 0.78rem;
-    font-weight: 650;
-}
-
-.attachment-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-shrink: 0;
-}
-
-.attachment-empty-state {
-    padding: 2rem 1rem;
-    border: 1px dashed #cbd5e1;
-    border-radius: 18px;
-    text-align: center;
-    background: #f8fafc;
-}
-
-.attachment-empty-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 46px;
-    height: 46px;
-    margin-bottom: 0.75rem;
-    border-radius: 16px;
-    color: #64748b;
-    background: #e2e8f0;
-    font-size: 1.25rem;
-}
-
-@media (max-width: 575.98px) {
-    .attachment-item {
-        align-items: flex-start;
-    }
-
-    .attachment-actions {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .attachment-actions .btn {
-        width: 100%;
+    .comment-attach-box {
+        padding: 0.85rem;
     }
 }
