@@ -91,7 +91,11 @@
                 @csrf
                 @method('PATCH')
 
-                <button type="submit" class="btn btn-outline-success">
+                <button type="button" class="btn btn-outline-success" data-confirm-action
+                    data-confirm-title="Assign Ticket"
+                    data-confirm-message="Are you sure you want to assign this ticket to yourself?"
+                    data-confirm-button="Yes, Assign" data-confirm-class="btn-primary">
+                    <i class="bi bi-person-check me-1"></i>
                     Assign to Me
                 </button>
             </form>
@@ -102,7 +106,11 @@
                 @csrf
                 @method('PATCH')
 
-                <button type="submit" class="btn btn-outline-secondary">
+                <button type="button" class="btn btn-outline-secondary" data-confirm-action
+                    data-confirm-title="Unassign Ticket"
+                    data-confirm-message="Are you sure you want to remove the current assignee from this ticket?"
+                    data-confirm-button="Yes, Unassign" data-confirm-class="btn-secondary">
+                    <i class="bi bi-person-dash me-1"></i>
                     Unassign
                 </button>
             </form>
@@ -113,7 +121,10 @@
                 @csrf
                 @method('PATCH')
 
-                <button type="submit" class="btn btn-success">
+                <button type="button" class="btn btn-success" data-confirm-action data-confirm-title="Resolve Ticket"
+                    data-confirm-message="Are you sure you want to mark this ticket to resolved?"
+                    data-confirm-button="Yes, Resolve" data-confirm-class="btn-success">
+                    <i class="bi bi-check-circle me-1"></i>
                     Resolve
                 </button>
             </form>
@@ -122,7 +133,10 @@
                 @csrf
                 @method('PATCH')
 
-                <button type="submit" class="btn btn-outline-dark">
+                <button type="button" class="btn btn-outline-dark" data-confirm-action data-confirm-title="Close Ticket"
+                    data-confirm-message="Are you sure you want to close this ticket? Closed tickets are considered completed."
+                    data-confirm-button="Yes, Close" data-confirm-class="btn-dark">
+                    <i class="bi bi-lock me-1"></i>
                     Close
                 </button>
             </form>
@@ -131,7 +145,10 @@
                 @csrf
                 @method('PATCH')
 
-                <button type="submit" class="btn btn-warning">
+                <button type="button" class="btn btn-warning" data-confirm-action data-confirm-title="Reopen Ticket"
+                    data-confirm-message="Are you sure you want to reopen this ticket?"
+                    data-confirm-button="Yes, Reopen" data-confirm-class="btn-warning">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>
                     Reopen
                 </button>
             </form>

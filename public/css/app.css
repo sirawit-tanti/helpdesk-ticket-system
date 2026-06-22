@@ -2231,3 +2231,30 @@ tr:has(.ticket-checkbox:disabled) {
     font-weight: 900;
     line-height: 1;
 }
+
+/* Confirmation Modal */
+.app-confirm-modal {
+    border: 0;
+    border-radius: 22px;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+}
+
+.app-confirm-modal .modal-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.1rem 1.25rem;
+}
+
+.app-confirm-modal .modal-title {
+    color: #0f172a;
+    font-weight: 900;
+}
+
+.app-confirm-modal .modal-body {
+    color: #475569;
+    padding: 1.25rem;
+}
+
+.app-confirm-modal .modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 1rem 1.25rem;
+}
