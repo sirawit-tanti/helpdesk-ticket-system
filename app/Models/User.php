@@ -100,7 +100,7 @@ class User extends Authenticatable
 
     public function canManageTickets(): bool
     {
-        return in_array($this->role?->name, ['admin', 'agent'], true);
+        return $this->isAdmin() || $this->isAgent();
     }
 
     public function canAccessAdminArea(): bool

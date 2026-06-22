@@ -706,26 +706,23 @@ class TicketController extends Controller
                 ->pluck('id');
 
             if ($priorityIds->isNotEmpty()) {
-                $query->whereIn('ticket_priority_id', $priorityIds);
-
-                $activeFilters[] = [
+                $activeFilters['priority_group'] = [
                     'label' => 'Priority',
                     'value' => 'High / Critical',
-                    'remove_url' => route(Route::currentRouteName(), $request->except(['priority_group', 'page'])),
                 ];
             }
         }
 
-        // if ($request->filled('priority_id')) {
-        //     $priority = $priorities->firstWhere('id', (int) $request->input('priority_id'));
+        if ($request->filled('priority_id') && $request->input('priority_group') !== 'high_critical') {
+            $priority = $priorities->firstWhere('id', (int) $request->input('priority_id'));
 
-        //     if ($priority) {
-        //         $activeFilters['priority_id'] = [
-        //             'label' => 'Priority',
-        //             'value' => $priority->name,
-        //         ];
-        //     }
-        // }
+            if ($priority) {
+                $activeFilters['priority_id'] = [
+                    'label' => 'Priority',
+                    'value' => $priority->name,
+                ];
+            }
+        }
 
         if ($request->filled('category_id')) {
             $category = $categories->firstWhere('id', (int) $request->input('category_id'));
@@ -880,7 +877,7 @@ class TicketController extends Controller
 
             return redirect()
                 ->back()
-                ->with('success', '{$updatedCount} ticket(s) assigned to you successfully.');
+                ->with('success', "{$updatedCount} ticket(s) assigned to you successfully.");
         }
 
         if ($validated['action'] === 'close') {
@@ -921,7 +918,7 @@ class TicketController extends Controller
 
             return redirect()
                 ->back()
-                ->with('success', '{$updatedCount} ticket(s) closed successfully.');
+                ->with('success', "{$updatedCount} ticket(s) closed successfully.");
         }
 
         return redirect()
