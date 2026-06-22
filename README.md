@@ -104,6 +104,18 @@ This project is designed as a portfolio application to demonstrate backend CRUD,
 - DomPDF for PDF export
 - CSV export with streamed response
 
+## Live Demo
+
+Production URL:
+
+```text
+https://helpdesk-ticket-system-production.up.railway.app/
+```
+
+You can test the system using the demo accounts listed in the **Demo Accounts** section below.
+
+> Note: This demo project uses Supabase PostgreSQL as the production database. File uploads are intended for portfolio demonstration.
+
 ## Demo Accounts
 
 After running the demo seeders, you can login with the following accounts:
