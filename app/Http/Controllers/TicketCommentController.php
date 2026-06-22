@@ -33,7 +33,7 @@ class TicketCommentController extends Controller
             foreach ($request->file('attachments') as $file) {
                 $path = $file->store('ticket-attachments', 'public');
 
-                TicketAttachment:: create([
+                TicketAttachment::create([
                     'ticket_id' => $ticket->id,
                     'ticket_comment_id' => $comment->id,
                     'uploaded_by' => $request->user()->id,

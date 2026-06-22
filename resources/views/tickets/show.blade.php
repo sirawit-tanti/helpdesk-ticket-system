@@ -283,66 +283,78 @@
                     enctype="multipart/form-data" data-loading-form>
                     @csrf
 
-                    <div class="mb-3">
-                        <label for="message" class="form-label">
-                            Message
-                        </label>
+                    <div class="comment-composer">
+                        <div class="comment-composer-header">
+                            <div>
+                                <h5 class="comment-composer-title">
+                                    Add Reply
+                                </h5>
 
-                        <textarea name="message" id="message" rows="4"
-                            class="form-control @error('message') is-invalid @enderror" placeholder="Write a comment..."
-                            required>{{ old('message') }}</textarea>
+                                <p class="comment-composer-text">
+                                    Share an update or add more details to this ticket.
+                                </p>
+                            </div>
 
-                        @error('message')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
+                            @if(auth()->user()->canManageTickets())
+                            <div class="form-check form-switch comment-type-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="is_internal"
+                                    name="is_internal" value="1" data-comment-type-toggle>
 
-                    @if(auth()->user()->canManageTickets())
-                    <div class="form-check mb-3">
-                        <input type="checkbox" name="is_internal" id="is_internal" value="1" class="form-check-input"
-                            {{ old('is_internal') ? 'checked' : '' }}>
-
-                        <label for="is_internal" class="form-check-label">
-                            Internal note
-                        </label>
-
-                        <div class="form-text">
-                            Internal notes are visible only to agents and admins.
-                        </div>
-                    </div>
-                    @endif
-
-                    <div class="mb-3">
-                        <label for="attachments" class="form-label">
-                            Attachments
-                        </label>
-
-                        <input type="file" name="attachments[]" id="attachments"
-                            class="form-control @error('attachments') is-invalid @enderror @error('attachments.*') is-invalid @enderror"
-                            multiple>
-
-                        <div class="form-text">
-                            You can upload up to 5 files. Supported: jpg, png, pdf, txt, doc, docx, xls, xlsx.
+                                <label class="form-check-label" for="is_internal">
+                                    Internal Note
+                                </label>
+                            </div>
+                            @endif
                         </div>
 
-                        @error('attachments')
+                        @if(auth()->user()->canManageTickets())
+                        <div class="comment-internal-alert d-none" data-internal-note-alert>
+                            <i class="bi bi-shield-lock me-1"></i>
+                            This note is internal and will only be visible to admins and agents.
+                        </div>
+                        @endif
+
+                        <textarea name="comment" rows="4"
+                            class="form-control comment-composer-input @error('comment') is-invalid @enderror"
+                            placeholder="Write your reply..." data-comment-input
+                            required>{{ old('comment') }}</textarea>
+
+                        @error('comment')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
                         @enderror
 
-                        @error('attachments.*')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
+                        <div class="mt-3">
+                            <label for="attachments" class="form-label fw-semibold">
+                                Attachments
+                            </label>
 
-                    <button type="submit" class="btn btn-primary">
-                        Add Comment
-                    </button>
+                            <input type="file" name="attachments[]" id="attachments"
+                                class="form-control @error('attachments.*') is-invalid @enderror" multiple>
+
+                            <div class="form-text">
+                                You can attach screenshots, documents, or related files.
+                            </div>
+
+                            @error('attachments.*')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="comment-composer-footer">
+                            <div class="comment-composer-hint" data-comment-hint>
+                                Public replies are visible to the requester and support team.
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" data-comment-submit>
+                                <i class="bi bi-send me-1"></i>
+                                Send Reply
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

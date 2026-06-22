@@ -473,6 +473,35 @@
                 confirmButton.className = 'btn btn-primary';
             });
         }
+        const commentTypeToggle = document.querySelector('[data-comment-type-toggle]');
+        const internalNoteAlert = document.querySelector('[data-internal-note-alert]');
+        const commentInput = document.querySelector('[data-comment-input]');
+        const commentHint = document.querySelector('[data-comment-hint]');
+        const commentSubmit = document.querySelector('[data-comment-submit]');
+
+        if (commentTypeToggle && commentInput && commentHint && commentSubmit) {
+            const updateCommentType = function() {
+                if (commentTypeToggle.checked) {
+                    internalNoteAlert?.classList.remove('d-none');
+                    commentInput.placeholder = 'Write an internal note...';
+                    commentHint.textContent = 'Internal notes are hidden from requesters.';
+                    commentSubmit.innerHTML = '<i class="bi bi-shield-lock me-1"></i> Add Internal Note';
+                    commentSubmit.classList.remove('btn-primary');
+                    commentSubmit.classList.add('btn-warning');
+                } else {
+                    internalNoteAlert?.classList.add('d-none');
+                    commentInput.placeholder = 'Write your reply...';
+                    commentHint.textContent =
+                        'Public replies are visible to the requester and support team.';
+                    commentSubmit.innerHTML = '<i class="bi bi-send me-1"></i> Send Reply';
+                    commentSubmit.classList.remove('btn-warning');
+                    commentSubmit.classList.add('btn-primary');
+                }
+            };
+
+            commentTypeToggle.addEventListener('change', updateCommentType);
+            updateCommentType();
+        }
     });
     </script>
 </body>
