@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use App\Models\TicketActivityLog;
+use App\Models\TicketPriority;
 use App\Models\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -85,6 +86,37 @@ class DashboardController extends Controller
 
         $recentActivities = $recentActivitiesQuery->get();
 
+        $openStatus = TicketStatus::where('name', 'Open')->first();
+        $inProgressStatus = TicketStatus::where('name', 'In Progress')->first();
+        $resolvedStatus = TicketStatus::where('name', 'Resolved')->first();
+        $closedStatus = TicketStatus::where('name', 'Closed')->first();
+        $highPriority = TicketPriority::where('name', 'High')->first();
+        $criticalPriority = TicketPriority::where('name', 'Critical')->first();
+
+        $dashboardLinks = [
+            'total' => route('tickets.index'),
+
+            'open' => $openStatus
+                ? route('tickets.index', ['status_id' => $openStatus->id])
+                : route('tickets.index'),
+
+            'in_progress' => $inProgressStatus
+                ? route('tickets.index', ['status_id' => $inProgressStatus->id])
+                : route('tickets.index'),
+
+            'resolved' => $resolvedStatus
+                ? route('tickets.index', ['status_id' => $resolvedStatus->id])
+                : route('tickets.index'),
+
+            'closed' => $closedStatus
+                ? route('tickets.index', ['status_id' => $closedStatus->id])
+                : route('tickets.index'),
+
+            'high_critical' => route('tickets.index', ['priority_group' => 'high_critical']),
+
+            'overdue' => route('tickets.index', ['overdue' => 1]),
+        ];
+
         return view('dashboard.index', compact(
             'totalTickets',
             'openTickets',
@@ -94,7 +126,8 @@ class DashboardController extends Controller
             'highPriorityTickets',
             'recentTickets',
             'overdueTickets',
-            'recentActivities'
+            'recentActivities',
+            'dashboardLinks'
         ));
     }
 

@@ -14,6 +14,7 @@ use App\Services\TicketActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Route;
 
 class TicketController extends Controller
 {
@@ -581,15 +582,36 @@ class TicketController extends Controller
         }
 
         if ($request->filled('status_id')) {
-            $query->where('ticket_status_id', $request->input('status_id'));
+            $status = TicketStatus::find($request->input('status_id'));
+
+            if ($status) {
+                $query->where('ticket_status_id', $status->id);
+            }
         }
 
-        if ($request->filled('priority_id')) {
-            $query->where('ticket_priority_id', $request->input('priority_id'));
+        if ($request->input('priority_group') === 'high_critical') {
+            $priorityIds = TicketPriority::whereIn('name', ['High', 'Critical'])
+                ->pluck('id');
+
+            if ($priorityIds->isNotEmpty()) {
+                $query->whereIn('ticket_priority_id', $priorityIds);
+            }
+        }
+
+        if ($request->filled('priority_id') && $request->input('priority_group') !== 'high_critical') {
+            $priority = TicketPriority::find($request->input('priority_id'));
+
+            if ($priority) {
+                $query->where('ticket_priority_id', $priority->id);
+            }
         }
 
         if ($request->filled('category_id')) {
-            $query->where('ticket_category_id', $request->input('category_id'));
+            $category = TicketCategory::find($request->input('category_id'));
+
+            if ($category) {
+                $query->where('ticket_category_id', $category->id);
+            }
         }
 
         if ($request->boolean('overdue')) {
@@ -679,16 +701,31 @@ class TicketController extends Controller
             }
         }
 
-        if ($request->filled('priority_id')) {
-            $priority = $priorities->firstWhere('id', (int) $request->input('priority_id'));
+        if ($request->input('priority_group') === 'high_critical') {
+            $priorityIds = TicketPriority::whereIn('name', ['High', 'Critical'])
+                ->pluck('id');
 
-            if ($priority) {
-                $activeFilters['priority_id'] = [
+            if ($priorityIds->isNotEmpty()) {
+                $query->whereIn('ticket_priority_id', $priorityIds);
+
+                $activeFilters[] = [
                     'label' => 'Priority',
-                    'value' => $priority->name,
+                    'value' => 'High / Critical',
+                    'remove_url' => route(Route::currentRouteName(), $request->except(['priority_group', 'page'])),
                 ];
             }
         }
+
+        // if ($request->filled('priority_id')) {
+        //     $priority = $priorities->firstWhere('id', (int) $request->input('priority_id'));
+
+        //     if ($priority) {
+        //         $activeFilters['priority_id'] = [
+        //             'label' => 'Priority',
+        //             'value' => $priority->name,
+        //         ];
+        //     }
+        // }
 
         if ($request->filled('category_id')) {
             $category = $categories->firstWhere('id', (int) $request->input('category_id'));

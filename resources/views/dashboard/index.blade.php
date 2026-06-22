@@ -60,66 +60,94 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-4 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Total Tickets</div>
-                <div class="h3 mb-0">{{ $totalTickets }}</div>
+        <a href="{{ $dashboardLinks['total'] }}" class="dashboard-stat-card text-decoration-none">
+            <div class="dashboard-stat-icon dashboard-stat-primary">
+                <i class="bi bi-ticket-perforated"></i>
             </div>
-        </div>
+
+            <div>
+                <div class="dashboard-stat-label">Total Tickets</div>
+                <div class="dashboard-stat-value">{{ $totalTickets }}</div>
+            </div>
+        </a>
     </div>
 
     <div class="col-md-4 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Open</div>
-                <div class="h3 mb-0">{{ $openTickets }}</div>
+        <a href="{{ $dashboardLinks['open'] }}" class="dashboard-stat-card text-decoration-none">
+            <div class="dashboard-stat-icon dashboard-stat-info">
+                <i class="bi bi-envelope-open"></i>
             </div>
-        </div>
+
+            <div>
+                <div class="dashboard-stat-label">Open</div>
+                <div class="dashboard-stat-value">{{ $openTickets }}</div>
+            </div>
+        </a>
     </div>
 
     <div class="col-md-4 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">In Progress</div>
-                <div class="h3 mb-0">{{ $inProgressTickets }}</div>
+        <a href="{{ $dashboardLinks['in_progress'] }}" class="dashboard-stat-card text-decoration-none">
+            <div class="dashboard-stat-icon dashboard-stat-warning">
+                <i class="bi bi-hourglass-split"></i>
             </div>
-        </div>
+
+            <div>
+                <div class="dashboard-stat-label">In Progress</div>
+                <div class="dashboard-stat-value">{{ $inProgressTickets }}</div>
+            </div>
+        </a>
     </div>
 
     <div class="col-md-4 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Resolved</div>
-                <div class="h3 mb-0">{{ $resolvedTickets }}</div>
+        <a href="{{ $dashboardLinks['resolved'] }}" class="dashboard-stat-card text-decoration-none">
+            <div class="dashboard-stat-icon dashboard-stat-success">
+                <i class="bi bi-check-circle"></i>
             </div>
-        </div>
+
+            <div>
+                <div class="dashboard-stat-label">Resolved</div>
+                <div class="dashboard-stat-value">{{ $resolvedTickets }}</div>
+            </div>
+        </a>
     </div>
 
     <div class="col-md-4 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Closed</div>
-                <div class="h3 mb-0">{{ $closedTickets }}</div>
+        <a href="{{ $dashboardLinks['closed'] }}" class="dashboard-stat-card text-decoration-none">
+            <div class="dashboard-stat-icon dashboard-stat-muted">
+                <i class="bi bi-lock"></i>
             </div>
-        </div>
+
+            <div>
+                <div class="dashboard-stat-label">Closed</div>
+                <div class="dashboard-stat-value">{{ $closedTickets }}</div>
+            </div>
+        </a>
     </div>
 
     <div class="col-md-4 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">High / Critical</div>
-                <div class="h3 mb-0">{{ $highPriorityTickets }}</div>
+        <a href="{{ $dashboardLinks['high_critical'] }}" class="dashboard-stat-card text-decoration-none">
+            <div class="dashboard-stat-icon dashboard-stat-danger">
+                <i class="bi bi-exclamation-triangle"></i>
             </div>
-        </div>
+
+            <div>
+                <div class="dashboard-stat-label">High / Critical</div>
+                <div class="dashboard-stat-value">{{ $highPriorityTickets }}</div>
+            </div>
+        </a>
     </div>
 
     <div class="col-md-4 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Overdue</div>
-                <div class="h3 mb-0 text-danger">{{ $overdueTickets }}</div>
+        <a href="{{ $dashboardLinks['overdue'] }}" class="dashboard-stat-card text-decoration-none">
+            <div class="dashboard-stat-icon dashboard-stat-danger">
+                <i class="bi bi-alarm"></i>
             </div>
-        </div>
+
+            <div>
+                <div class="dashboard-stat-label">Overdue</div>
+                <div class="dashboard-stat-value">{{ $overdueTickets }}</div>
+            </div>
+        </a>
     </div>
 </div>
 

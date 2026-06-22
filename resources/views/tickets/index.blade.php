@@ -387,50 +387,36 @@ $searchTerm = request('search');
                     </tbody>
                 </table>
             </div>
-
             {{ $tickets->links() }}
             @else
-            @forelse($tickets as $ticket)
-            {{-- ticket row --}}
-            @empty
-            <tr class="ticket-row {{ $ticket->isOverdue() ? 'ticket-row-overdue' : '' }} {{ $ticket->isDueSoon() ? 'ticket-row-due-soon' : '' }}"
-                data-href="{{ route('tickets.show', $ticket) }}">
-                <td colspan="{{ auth()->user()->canManageTickets() ? 10 : 9 }}">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">
-                            <i class="bi bi-inbox"></i>
-                        </div>
+            <div class="empty-state py-5">
+                <div class="empty-state-icon">
+                    <i class="bi bi-inbox"></i>
+                </div>
 
-                        <div class="empty-state-title">
-                            No tickets found
-                        </div>
+                <div class="empty-state-title">
+                    No tickets found
+                </div>
 
-                        <div class="empty-state-text">
-                            Try adjusting your filters or create a new ticket.
-                        </div>
+                <div class="empty-state-text">
+                    Try adjusting your filters or create a new ticket.
+                </div>
 
-                        <div class="mt-3">
-                            <a href="{{ route('tickets.create') }}" class="btn btn-primary">
-                                <i class="bi bi-plus-lg me-1"></i>
-                                Create Ticket
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            @endforelse
-            <!-- <div class="text-center py-5">
-                <h2 class="h5">No tickets found</h2>
-                <p class="text-muted mb-3">
-                    Create your first support ticket to get started.
-                </p>
+                <div class="mt-3 d-flex justify-content-center gap-2 flex-wrap">
+                    <a href="{{ route('tickets.create') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i>
+                        Create Ticket
+                    </a>
 
-                <a href="{{ route('tickets.create') }}" class="btn btn-primary">
-                    Create Ticket
-                </a>
-            </div> -->
+                    <a href="{{ url()->current() }}" class="btn btn-outline-secondary">
+                        Clear Filters
+                    </a>
+                </div>
+            </div>
             @endif
         </div>
+    </div>
+    </div>
     </div>
     @if(auth()->user()->canManageTickets())
 </form>
