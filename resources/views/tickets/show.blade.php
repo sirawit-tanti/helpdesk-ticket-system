@@ -501,7 +501,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <div class="activity-header-actions">
                         <span class="badge bg-light text-dark border">
                             {{ $ticket->activityLogs->count() }}
                         </span>

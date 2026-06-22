@@ -36,7 +36,18 @@
                 </span>
             </a>
 
-            <div class="ms-auto d-flex align-items-center gap-3">
+            <div class="ms-auto d-flex align-items-center gap-2 gap-md-3">
+                <a href="{{ route('profile.edit') }}" class="app-mobile-user-chip d-md-none" title="Profile"
+                    aria-label="Profile">
+                    <span class="app-mobile-user-avatar app-user-avatar-{{ auth()->user()->role?->name ?? 'user' }}">
+                        {{ auth()->user()->initial }}
+                    </span>
+
+                    <span class="app-mobile-user-name">
+                        {{ auth()->user()->name }}
+                    </span>
+                </a>
+
                 <div class="app-user-info d-none d-md-flex">
                     <div class="app-user-avatar app-user-avatar-{{ auth()->user()->role?->name ?? 'user' }}">
                         {{ auth()->user()->initial }}
@@ -55,11 +66,11 @@
                     </div>
                 </div>
 
-                <a href="{{ route('profile.edit') }}" class="btn app-profile-btn">
+                <a href="{{ route('profile.edit') }}" class="btn app-profile-btn d-none d-md-inline-flex">
                     Profile
                 </a>
 
-                <form method="POST" action="{{ route('logout') }}" class="mb-0">
+                <form method="POST" action="{{ route('logout') }}" class="mb-0 d-none d-md-block">
                     @csrf
 
                     <button type="submit" class="btn app-logout-btn">
