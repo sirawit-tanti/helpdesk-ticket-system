@@ -464,14 +464,53 @@
         </div>
 
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <div>
-                    Activity Logs
-                </div>
+            <div class="card-header bg-white border-0 pb-0">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                    <div>
+                        <h5 class="mb-1">
+                            <i class="bi bi-clock-history me-1"></i>
+                            Activity Logs
+                        </h5>
 
-                <span class="badge bg-light text-dark border">
-                    {{ $ticket->activityLogs->count() }}
-                </span>
+                        <div class="text-muted small">
+                            Track important changes and updates for this ticket.
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge bg-light text-dark border">
+                            {{ $ticket->activityLogs->count() }}
+                        </span>
+
+                        @if($ticket->activityLogs->count())
+                        <div class="activity-filter-group" role="group" aria-label="Activity filters">
+                            <button type="button" class="activity-filter-btn active" data-activity-filter="all">
+                                All
+                            </button>
+
+                            <button type="button" class="activity-filter-btn" data-activity-filter="comment">
+                                Comments
+                            </button>
+
+                            <button type="button" class="activity-filter-btn" data-activity-filter="attachment">
+                                Attachments
+                            </button>
+
+                            <button type="button" class="activity-filter-btn" data-activity-filter="status">
+                                Status
+                            </button>
+
+                            <button type="button" class="activity-filter-btn" data-activity-filter="assignment">
+                                Assignment
+                            </button>
+
+                            <button type="button" class="activity-filter-btn" data-activity-filter="other">
+                                Other
+                            </button>
+                        </div>
+                        @endif
+                    </div>
+                </div>
             </div>
 
             <div class="card-body">
@@ -503,9 +542,21 @@
                     'updated' => 'activity-updated',
                     default => 'activity-default',
                     };
+
+                    $activityType = match (true) {
+                    in_array($log->action, ['comment_added', 'internal_note_added'], true) => 'comment',
+                    $log->action === 'attachment_added' => 'attachment',
+                    in_array($log->action, ['resolved', 'closed', 'reopened'], true) => 'status',
+                    $log->action === 'updated' && in_array($log->field, ['status', 'ticket_status_id', 'ticket_status'],
+                    true) => 'status',
+                    $log->action === 'updated' && in_array($log->field, ['assignee', 'assignee_id'], true) =>
+                    'assignment',
+                    default => 'other',
+                    };
                     @endphp
 
-                    <div class="activity-item {{ $activityClass }}">
+                    <div class="activity-item {{ $activityClass }}" data-activity-item
+                        data-activity-type="{{ $activityType }}">
                         <div class="activity-icon">
                             <i class="bi {{ $activityIcon }}"></i>
                         </div>
@@ -577,12 +628,30 @@
                     </div>
                     @endforeach
                 </div>
+
+                <div class="activity-filter-empty d-none" data-activity-empty>
+                    <div class="attachment-empty-icon">
+                        <i class="bi bi-funnel"></i>
+                    </div>
+
+                    <div class="fw-bold">
+                        No activity found
+                    </div>
+
+                    <div class="text-muted small">
+                        Try choosing another activity filter.
+                    </div>
+                </div>
                 @else
                 <div class="empty-state">
                     <div class="empty-state-icon">
                         <i class="bi bi-clock-history"></i>
                     </div>
-                    <div class="empty-state-title">No activity logs yet</div>
+
+                    <div class="empty-state-title">
+                        No activity logs yet
+                    </div>
+
                     <div class="empty-state-text">
                         Ticket activity will appear here.
                     </div>

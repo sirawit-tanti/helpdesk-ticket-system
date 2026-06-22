@@ -606,6 +606,41 @@
                 renderSelectedFiles();
             });
         }
+        const activityFilterButtons = document.querySelectorAll('[data-activity-filter]');
+        const activityItems = document.querySelectorAll('[data-activity-item]');
+        const activityEmpty = document.querySelector('[data-activity-empty]');
+
+        if (activityFilterButtons.length && activityItems.length) {
+            activityFilterButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const selectedType = button.dataset.activityFilter;
+                    let visibleCount = 0;
+
+                    activityFilterButtons.forEach(function(item) {
+                        item.classList.remove('active');
+                    });
+
+                    button.classList.add('active');
+
+                    activityItems.forEach(function(item) {
+                        const itemType = item.dataset.activityType;
+
+                        const shouldShow = selectedType === 'all' || itemType ===
+                            selectedType;
+
+                        item.classList.toggle('d-none', !shouldShow);
+
+                        if (shouldShow) {
+                            visibleCount++;
+                        }
+                    });
+
+                    if (activityEmpty) {
+                        activityEmpty.classList.toggle('d-none', visibleCount > 0);
+                    }
+                });
+            });
+        }
     });
     </script>
 </body>

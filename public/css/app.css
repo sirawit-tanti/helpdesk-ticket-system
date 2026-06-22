@@ -2490,3 +2490,60 @@ tr:has(.ticket-checkbox:disabled) {
         padding: 0.85rem;
     }
 }
+
+/* Activity Timeline Filter */
+.activity-filter-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    background: #f8fafc;
+}
+
+.activity-filter-btn {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.35rem 0.65rem;
+    color: #64748b;
+    background: transparent;
+    font-size: 0.76rem;
+    font-weight: 850;
+    transition:
+        color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.activity-filter-btn:hover {
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+.activity-filter-btn.active {
+    color: #ffffff;
+    background: #2563eb;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+}
+
+.activity-filter-empty {
+    padding: 2rem 1rem;
+    border: 1px dashed #cbd5e1;
+    border-radius: 18px;
+    text-align: center;
+    background: #f8fafc;
+}
+
+@media (max-width: 575.98px) {
+    .activity-filter-group {
+        width: 100%;
+        overflow-x: auto;
+        justify-content: flex-start;
+        border-radius: 18px;
+    }
+
+    .activity-filter-btn {
+        white-space: nowrap;
+    }
+}
