@@ -3,6 +3,19 @@
 @section('title', 'Edit Ticket - Helpdesk Ticket System')
 
 @section('content')
+@if($errors->any())
+<div class="alert alert-danger">
+    <div class="fw-bold mb-1">
+        Please fix the following errors:
+    </div>
+
+    <ul class="mb-0 ps-3">
+        @foreach($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 mb-1">Edit Ticket</h1>
@@ -18,6 +31,19 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body">
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <div class="fw-bold mb-1">
+                Please fix the following errors:
+            </div>
+
+            <ul class="mb-0 ps-3">
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <form method="POST" action="{{ route('tickets.update', $ticket) }}">
             @csrf
             @method('PUT')
@@ -28,7 +54,7 @@
                 </label>
 
                 <input type="text" name="title" id="title" value="{{ old('title', $ticket->title) }}"
-                    class="form-control @error('title') is-invalid @enderror" required>
+                    class="form-control @error('title') is-invalid @enderror">
 
                 @error('title')
                 <div class="invalid-feedback">
@@ -44,7 +70,7 @@
                     </label>
 
                     <select name="ticket_category_id" id="ticket_category_id"
-                        class="form-select @error('ticket_category_id') is-invalid @enderror" required>
+                        class="form-select @error('ticket_category_id') is-invalid @enderror">
                         @foreach($categories as $category)
                         <option value="{{ $category->id }}" @selected(old('ticket_category_id', $ticket->
                             ticket_category_id) == $category->id)
@@ -67,7 +93,7 @@
                     </label>
 
                     <select name="ticket_priority_id" id="ticket_priority_id"
-                        class="form-select @error('ticket_priority_id') is-invalid @enderror" required>
+                        class="form-select @error('ticket_priority_id') is-invalid @enderror">
                         @foreach($priorities as $priority)
                         <option value="{{ $priority->id }}" @selected(old('ticket_priority_id', $ticket->
                             ticket_priority_id) == $priority->id)
@@ -90,7 +116,7 @@
                     </label>
 
                     <select name="ticket_status_id" id="ticket_status_id"
-                        class="form-select @error('ticket_status_id') is-invalid @enderror" required>
+                        class="form-select @error('ticket_status_id') is-invalid @enderror">
                         @foreach($statuses as $status)
                         <option value="{{ $status->id }}" @selected(old('ticket_status_id', $ticket->ticket_status_id)
                             == $status->id)
@@ -166,8 +192,7 @@
                 </label>
 
                 <textarea name="description" id="description" rows="6"
-                    class="form-control @error('description') is-invalid @enderror"
-                    required>{{ old('description', $ticket->description) }}</textarea>
+                    class="form-control @error('description') is-invalid @enderror">{{ old('description', $ticket->description) }}</textarea>
 
                 @error('description')
                 <div class="invalid-feedback">

@@ -2580,3 +2580,15 @@ tr:has(.ticket-checkbox:disabled) {
         margin-top: 0.5rem;
     }
 }
+
+.alert-danger {
+    border: 1px solid #fecaca;
+    border-radius: 16px;
+    color: #991b1b;
+    background: #fef2f2;
+}
+
+.invalid-feedback {
+    font-size: 0.8rem;
+    font-weight: 650;
+}

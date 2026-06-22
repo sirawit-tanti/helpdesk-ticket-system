@@ -25,4 +25,19 @@ class StoreTicketCommentRequest extends FormRequest
             ],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'message.required' => 'Please enter a reply or internal note.',
+            'message.string' => 'Message must be valid text.',
+            'message.max' => 'Message must not exceed 5,000 characters.',
+
+            'is_internal.boolean' => 'Internal note option is invalid.',
+
+            'attachments.array' => 'Attachments must be uploaded as a valid file list.',
+            'attachments.*.file' => 'Each attachment must be a valid file.',
+            'attachments.*.max' => 'Each attachment must not exceed 10 MB.',
+        ];
+    }
 }

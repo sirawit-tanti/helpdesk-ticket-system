@@ -18,6 +18,19 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body">
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <div class="fw-bold mb-1">
+                Please fix the following errors:
+            </div>
+
+            <ul class="mb-0 ps-3">
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <form method="POST" action="{{ route('tickets.store') }}" data-loading-form>
             @csrf
 
@@ -26,7 +39,7 @@
 
                 <input type="text" name="title" id="title" value="{{ old('title') }}"
                     class="form-control @error('title') is-invalid @enderror"
-                    placeholder="Example: Cannot access company email" required>
+                    placeholder="Example: Cannot access company email">
 
                 @error('title')
                 <div class="invalid-feedback">
@@ -42,7 +55,7 @@
                     </label>
 
                     <select name="ticket_category_id" id="ticket_category_id"
-                        class="form-select @error('ticket_category_id') is-invalid @enderror" required>
+                        class="form-select @error('ticket_category_id') is-invalid @enderror">
                         <option value="">Select category</option>
 
                         @foreach($categories as $category)
@@ -66,7 +79,7 @@
                     </label>
 
                     <select name="ticket_priority_id" id="ticket_priority_id"
-                        class="form-select @error('ticket_priority_id') is-invalid @enderror" required>
+                        class="form-select @error('ticket_priority_id') is-invalid @enderror">
                         <option value="">Select priority</option>
 
                         @foreach($priorities as $priority)
@@ -86,7 +99,7 @@
 
                 <div class="col-md-4 mb-3">
                     <label for="department_id" class="form-label">
-                        Department
+                        Department <span class="text-danger">*</span>
                     </label>
 
                     <select name="department_id" id="department_id"
@@ -116,8 +129,7 @@
 
                 <textarea name="description" id="description" rows="6"
                     class="form-control @error('description') is-invalid @enderror"
-                    placeholder="Please describe the issue, steps to reproduce, and any error messages."
-                    required>{{ old('description') }}</textarea>
+                    placeholder="Please describe the issue, steps to reproduce, and any error messages.">{{ old('description') }}</textarea>
 
                 @error('description')
                 <div class="invalid-feedback">
